@@ -9,6 +9,8 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -25,17 +27,15 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
-  private final SwerveDriveSubsystem swerveDriveSubsystem;
-
+  private final SwerveDriveSubsystem swerveDriveSubsystem =new SwerveDriveSubsystem();
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
       OperatorConstants.kDriverControllerPort);
+  // private final XboxController driverController_HID = m_driverController.getHID();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
-  public RobotContainer() {
-    swerveDriveSubsystem = new SwerveDriveSubsystem();
+   */  public RobotContainer() {
 
     // Configure the trigger bindings
     configureBindings();
@@ -56,7 +56,10 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-
+    swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
+        () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(1), 0),
+        () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(0), 0),
+        () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0)));
   }
 
   /**

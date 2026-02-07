@@ -6,6 +6,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import swervelib.SwerveDrive;
@@ -76,6 +77,12 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             var rotation = angularRotationX.getAsDouble() * swerveDrive.getMaximumChassisAngularVelocity();
 
             swerveDrive.drive(translation, rotation, true, false);
+            System.out.println("Default running");
+        SmartDashboard.putNumber("X", x);
+        SmartDashboard.putNumber("Y", y);
+        SmartDashboard.putNumber("Rotation", rotation);
+       
+       
         });
     }
 }
