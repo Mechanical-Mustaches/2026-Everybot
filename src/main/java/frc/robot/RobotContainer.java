@@ -6,7 +6,9 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
+import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import edu.wpi.first.math.MathUtil;
@@ -26,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+ public final ClimberSubsystem climberSubsystem;
 
   private final SwerveDriveSubsystem swerveDriveSubsystem =new SwerveDriveSubsystem();
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -36,7 +39,7 @@ public class RobotContainer {
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */  public RobotContainer() {
-
+    climberSubsystem = new ClimberSubsystem();
     // Configure the trigger bindings
     configureBindings();
   }
@@ -60,6 +63,8 @@ public class RobotContainer {
         () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(1), 0),
         () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(0), 0),
         () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0)));
+
+    m_driverController.a().whileTrue(new ClimberCommand(climberSubsystem, false, 0));
   }
 
   /**
