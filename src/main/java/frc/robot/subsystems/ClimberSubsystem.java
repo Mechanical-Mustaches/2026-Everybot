@@ -27,7 +27,7 @@ public class ClimberSubsystem implements Subsystem {
         // main climber configuration:
 
         // TODO: Get motor ID
-        Climber = new SparkMax(10, MotorType.kBrushless);
+        Climber = new SparkMax(10, MotorType.kBrushed);
 
         ClimberConfig = new SparkMaxConfig();
 

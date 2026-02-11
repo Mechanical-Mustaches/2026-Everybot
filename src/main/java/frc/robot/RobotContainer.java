@@ -30,7 +30,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
  public final ClimberSubsystem climberSubsystem;
 
-  private final SwerveDriveSubsystem swerveDriveSubsystem =new SwerveDriveSubsystem();
+  private final SwerveDriveSubsystem swerveDriveSubsystem;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
       OperatorConstants.kDriverControllerPort);
@@ -39,6 +39,7 @@ public class RobotContainer {
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */  public RobotContainer() {
+    swerveDriveSubsystem = new SwerveDriveSubsystem();
     climberSubsystem = new ClimberSubsystem();
     // Configure the trigger bindings
     configureBindings();
@@ -60,9 +61,9 @@ public class RobotContainer {
    */
   private void configureBindings() {
     swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
-        () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(1), 0),
-        () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(0), 0),
-        () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0)));
+        () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(1), 0.1),
+        () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(0), 0.1),
+        () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0.1)));
 
     m_driverController.a().whileTrue(new ClimberCommand(climberSubsystem, false, 0));
   }

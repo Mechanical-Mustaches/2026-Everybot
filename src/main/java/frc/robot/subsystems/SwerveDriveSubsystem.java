@@ -23,12 +23,14 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             var directory = new File(Filesystem.getDeployDirectory(), "swerve");
             var parser = new SwerveParser(directory);
 
-            this.swerveDrive = parser.createSwerveDrive(0);
+            this.swerveDrive = parser.createSwerveDrive(5);
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
 
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+
+        swerveDrive.setMotorIdleMode(true);
     }
 
     /**
@@ -41,23 +43,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      * @param headingY     Heading Y to calculate angle of the joystick.
      * @return Drive command.
      */
-    public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX,
-            DoubleSupplier headingY) {
-        return run(() -> {
-            var translation = new Translation2d(translationX.getAsDouble(), translationY.getAsDouble());
-            var scaledInputs = SwerveMath.scaleTranslation(translation, 0.8);
-            var targetSpeeds = swerveDrive.swerveController.getTargetSpeeds(
-                    scaledInputs.getX(),
-                    scaledInputs.getY(),
-                    headingX.getAsDouble(),
-                    headingY.getAsDouble(),
-                    swerveDrive.getOdometryHeading().getRadians(),
-                    swerveDrive.getMaximumChassisVelocity());
-
-            // Make the robot move
-            this.swerveDrive.driveFieldOriented(targetSpeeds);
-        });
-    }
+    
 
     /**
      * Command to drive the robot using translative values and heading as angular
@@ -77,7 +63,9 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             var rotation = angularRotationX.getAsDouble() * swerveDrive.getMaximumChassisAngularVelocity();
 
             swerveDrive.drive(translation, rotation, true, false);
-            System.out.println("Default running");
+
+        SmartDashboard.putNumber("MaxChassisAngularVelocity", swerveDrive.getMaximumChassisAngularVelocity());
+        SmartDashboard.putNumber("MaxChassisVelocity", swerveDrive.getMaximumChassisVelocity());
         SmartDashboard.putNumber("X", x);
         SmartDashboard.putNumber("Y", y);
         SmartDashboard.putNumber("Rotation", rotation);
