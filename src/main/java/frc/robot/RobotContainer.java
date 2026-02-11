@@ -68,7 +68,7 @@ public class RobotContainer {
         () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0.1)));
 
     m_driverController.a().whileTrue(new ClimberCommand(climberSubsystem, true, 0));
-    m_driverController.a().whileFalse(new ClimberCommand(climberSubsystem, false, 1));
+    m_driverController.a().whileFalse(new ClimberCommand(climberSubsystem, false, 0));
   }
 
   /**
