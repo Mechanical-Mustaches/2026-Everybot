@@ -28,17 +28,19 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
- public final ClimberSubsystem climberSubsystem;
+  public final ClimberSubsystem climberSubsystem;
 
   private final SwerveDriveSubsystem swerveDriveSubsystem;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
       OperatorConstants.kDriverControllerPort);
-  // private final XboxController driverController_HID = m_driverController.getHID();
+  // private final XboxController driverController_HID =
+  // m_driverController.getHID();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
-   */  public RobotContainer() {
+   */
+  public RobotContainer() {
     swerveDriveSubsystem = new SwerveDriveSubsystem();
     climberSubsystem = new ClimberSubsystem();
     // Configure the trigger bindings
@@ -65,7 +67,8 @@ public class RobotContainer {
         () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(0), 0.1),
         () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0.1)));
 
-    m_driverController.a().whileTrue(new ClimberCommand(climberSubsystem, false, 0));
+    m_driverController.a().whileTrue(new ClimberCommand(climberSubsystem, true, 0));
+    m_driverController.a().whileFalse(new ClimberCommand(climberSubsystem, false, 1));
   }
 
   /**

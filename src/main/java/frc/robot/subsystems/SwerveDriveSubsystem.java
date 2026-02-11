@@ -23,7 +23,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             var directory = new File(Filesystem.getDeployDirectory(), "swerve");
             var parser = new SwerveParser(directory);
 
-            this.swerveDrive = parser.createSwerveDrive(5);
+            this.swerveDrive = parser.createSwerveDrive(5.32);
+            // parameter is max speed
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
@@ -43,7 +44,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      * @param headingY     Heading Y to calculate angle of the joystick.
      * @return Drive command.
      */
-    
 
     /**
      * Command to drive the robot using translative values and heading as angular
@@ -64,13 +64,12 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
             swerveDrive.drive(translation, rotation, true, false);
 
-        SmartDashboard.putNumber("MaxChassisAngularVelocity", swerveDrive.getMaximumChassisAngularVelocity());
-        SmartDashboard.putNumber("MaxChassisVelocity", swerveDrive.getMaximumChassisVelocity());
-        SmartDashboard.putNumber("X", x);
-        SmartDashboard.putNumber("Y", y);
-        SmartDashboard.putNumber("Rotation", rotation);
-       
-       
+            SmartDashboard.putNumber("MaxChassisAngularVelocity", swerveDrive.getMaximumChassisAngularVelocity());
+            SmartDashboard.putNumber("MaxChassisVelocity", swerveDrive.getMaximumChassisVelocity());
+            SmartDashboard.putNumber("X", x);
+            SmartDashboard.putNumber("Y", y);
+            SmartDashboard.putNumber("Rotation", rotation);
+
         });
     }
 }
