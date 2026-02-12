@@ -12,7 +12,7 @@ public class IntakeSubsystem implements Subsystem {
 
     SparkMax mainMotor = new SparkMax(12, MotorType.kBrushless);
     SparkMax mainMotorFollower = new SparkMax(11, MotorType.kBrushless);
-    SparkMax indexMotor = new SparkMax(9, MotorType.kBrushless);
+    SparkMax indexMotor = new SparkMax(10, MotorType.kBrushed);
 
     SparkMaxConfig mainMotorFollowerConfig = new SparkMaxConfig();
 
@@ -24,19 +24,19 @@ public class IntakeSubsystem implements Subsystem {
     }
 
     public void shoot() {
-        mainMotor.set(1);
+        mainMotor.set(-1);
     }
 
     public void intake() {
-        mainMotor.set(0.5);
+        mainMotor.set(-0.5);
     }
 
     public void indexIn() {
-        indexMotor.set(.75);
+        indexMotor.set(-.75);
     }
 
     public void indexOut() {
-        indexMotor.set(-1);
+        indexMotor.set(1);
     }
 
     public void stopShooter() {
@@ -45,6 +45,11 @@ public class IntakeSubsystem implements Subsystem {
 
     public void stopIndex() {
         indexMotor.set(0);
+    }
+
+    public void feed() {
+        indexOut();
+        shoot();
     }
 
 }

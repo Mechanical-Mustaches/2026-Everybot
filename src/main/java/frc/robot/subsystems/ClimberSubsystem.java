@@ -47,10 +47,10 @@ public class ClimberSubsystem implements Subsystem {
 
         public void extend(int stage) {
 
-                if (stage == 0) { 
+                if (stage == 0) {
                         var controller = climber.getClosedLoopController();
                         controller.setSetpoint(EXTEND_RANGE, ControlType.kPosition);
-                        
+
                 }
 
         }
@@ -58,7 +58,7 @@ public class ClimberSubsystem implements Subsystem {
         public void retract(int stage) {
                 if (stage == 0) {
                         closedLoopController.setSetpoint(CLIMB_RANGE, ControlType.kPosition);
-                        
+
                 }
         }
 

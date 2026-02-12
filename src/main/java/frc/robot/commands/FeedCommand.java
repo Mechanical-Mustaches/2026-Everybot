@@ -1,0 +1,24 @@
+package frc.robot.commands;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.IntakeSubsystem;
+
+public class FeedCommand extends Command {
+
+    IntakeSubsystem intake;
+
+    public FeedCommand(IntakeSubsystem intake) {
+        this.intake = intake;
+    }
+
+    @Override
+    public void initialize() {
+        intake.feed();
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        intake.stopIndex();
+        intake.stopShooter();
+    }
+}

@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.FeedCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -15,6 +16,9 @@ import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.estimator.PoseEstimator;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
@@ -34,8 +38,8 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final ClimberSubsystem climberSubsystem;
   public final IntakeSubsystem intakeSubsystem;
-
   private final SwerveDriveSubsystem swerveDriveSubsystem;
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
       OperatorConstants.kDriverControllerPort);
@@ -48,6 +52,7 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+
     swerveDriveSubsystem = new SwerveDriveSubsystem();
     climberSubsystem = new ClimberSubsystem();
     intakeSubsystem = new IntakeSubsystem();
@@ -80,6 +85,7 @@ public class RobotContainer {
 
     m_gunnerController.button(1).whileTrue(new ShootCommand(intakeSubsystem));
     m_gunnerController.button(2).whileTrue(new IntakeCommand(intakeSubsystem));
+    m_gunnerController.button(3).whileTrue(new FeedCommand(intakeSubsystem));
 
   }
 
