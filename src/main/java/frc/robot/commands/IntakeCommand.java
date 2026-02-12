@@ -13,7 +13,7 @@ public class IntakeCommand extends Command {
     @Override
     public void initialize() {
         intake.indexIn();
-        intake.shoot();
+        intake.intake();
 
     }
 

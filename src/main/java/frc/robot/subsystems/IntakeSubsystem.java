@@ -17,7 +17,7 @@ public class IntakeSubsystem implements Subsystem {
     SparkMaxConfig mainMotorFollowerConfig = new SparkMaxConfig();
 
     public IntakeSubsystem() {
-        mainMotorFollowerConfig.follow(12);
+        mainMotorFollowerConfig.follow(12, true);
         mainMotorFollower.configure(mainMotorFollowerConfig, ResetMode.kNoResetSafeParameters,
                 PersistMode.kNoPersistParameters);
 
@@ -25,6 +25,10 @@ public class IntakeSubsystem implements Subsystem {
 
     public void shoot() {
         mainMotor.set(1);
+    }
+
+    public void intake() {
+        mainMotor.set(0.5);
     }
 
     public void indexIn() {
