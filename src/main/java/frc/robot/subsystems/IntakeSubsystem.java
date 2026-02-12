@@ -32,7 +32,7 @@ public class IntakeSubsystem implements Subsystem {
     }
 
     public void indexIn() {
-        indexMotor.set(1);
+        indexMotor.set(.75);
     }
 
     public void indexOut() {
