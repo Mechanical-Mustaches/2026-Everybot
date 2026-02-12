@@ -13,7 +13,7 @@ public class ClimberCommand extends Command {
     public ClimberCommand(ClimberSubsystem climberSubsystem, boolean extend, int stage) {
         this.extend = extend;
         this.climberSubsystem = climberSubsystem;
-        this.stage=stage;
+        this.stage = stage;
     }
 
     @Override
@@ -25,8 +25,6 @@ public class ClimberCommand extends Command {
             climberSubsystem.retract(stage);
         }
     }
-
-   
 
     @Override
     public boolean isFinished() { // cheks is the motors are whitin their range and report
