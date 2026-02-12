@@ -5,6 +5,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.FeedbackSensor;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig;
@@ -19,55 +20,52 @@ public class ClimberSubsystem implements Subsystem {
 
         private static double MAIN_TOLERANCE = 0.1;
 
-        private SparkMax Climber;
-        private SparkMaxConfig ClimberConfig;
-        private ClosedLoopConfig ClimberClosedLoopConfig;
+        private SparkMax climber = new SparkMax(10, MotorType.kBrushed);
+        private SparkMaxConfig climberConfig;
+        private ClosedLoopConfig climberClosedLoopConfig;
+        private SparkClosedLoopController closedLoopController = climber.getClosedLoopController();
 
         public ClimberSubsystem() {
                 // main climber configuration:
-
-                // TODO: Get motor ID
-                Climber = new SparkMax(10, MotorType.kBrushed);
-
-                ClimberConfig = new SparkMaxConfig();
+                climberConfig = new SparkMaxConfig();
 
                 // TODO: Update PID constants
-                ClimberClosedLoopConfig = new ClosedLoopConfig()
+                climberClosedLoopConfig = new ClosedLoopConfig()
                                 .pid(0.1, 0, 0)
                                 .outputRange(EXTEND_RANGE, CLIMB_RANGE)
                                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
-                ClimberConfig
+                climberConfig
                                 // TODO: Find range of rotations needed
                                 .smartCurrentLimit(40)
-                                .idleMode(IdleMode.kBrake);// kBrake prevent motor from moving when force is applied
+                                .idleMode(IdleMode.kBrake)// kBrake prevent motor from moving when force is applied
+                                .apply(climberClosedLoopConfig);
 
-                ClimberConfig.apply(ClimberClosedLoopConfig);
-
-                Climber.configure(ClimberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+                climber.configure(climberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         }
 
         public void extend(int stage) {
 
-                if (stage == 0) {
-                        var controller = Climber.getClosedLoopController();
+                if (stage == 0) { 
+                        var controller = climber.getClosedLoopController();
                         controller.setSetpoint(EXTEND_RANGE, ControlType.kPosition);
+                        
                 }
 
         }
 
         public void retract(int stage) {
                 if (stage == 0) {
-                        var controller = Climber.getClosedLoopController();
-                        controller.setSetpoint(CLIMB_RANGE, ControlType.kPosition);
+                        closedLoopController.setSetpoint(CLIMB_RANGE, ControlType.kPosition);
+                        
                 }
         }
 
         public boolean isExtended(int stage) {// mehtod cheks if the motor in extended position
 
                 if (stage == 0) {
-                        var position = Climber.getEncoder().getPosition();
+                        var position = climber.getEncoder().getPosition();
                         return position < EXTEND_RANGE + MAIN_TOLERANCE
                                         || position > EXTEND_RANGE - MAIN_TOLERANCE;// adds range for motor to return
                                                                                     // its position
@@ -78,7 +76,7 @@ public class ClimberSubsystem implements Subsystem {
 
         public boolean isRetracted(int stage) {// mehtod cheks if the motor in retracted position
                 if (stage == 0) {
-                        var position = Climber.getEncoder().getPosition();
+                        var position = climber.getEncoder().getPosition();
                         return position < EXTEND_RANGE + MAIN_TOLERANCE
                                         || position > EXTEND_RANGE - MAIN_TOLERANCE;// adds range for motor to return
                                                                                     // its position
@@ -87,7 +85,7 @@ public class ClimberSubsystem implements Subsystem {
         }
 
         public void stop() {
-                var controller = Climber.getClosedLoopController();
+                var controller = climber.getClosedLoopController();
                 controller.setSetpoint(0, ControlType.kPosition);
         }
 
