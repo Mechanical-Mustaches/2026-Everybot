@@ -43,7 +43,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         this.poseEstimator = new SwerveDrivePoseEstimator(swerveDrive.kinematics,
                 rotation,
                 swerveDrive.getModulePositions(),
-                null);
+                new Pose2d());
     }
 
     public Pose2d getPose() {

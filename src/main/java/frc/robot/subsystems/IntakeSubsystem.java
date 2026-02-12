@@ -12,7 +12,7 @@ public class IntakeSubsystem implements Subsystem {
 
     SparkMax mainMotor = new SparkMax(12, MotorType.kBrushless);
     SparkMax mainMotorFollower = new SparkMax(11, MotorType.kBrushless);
-    SparkMax indexMotor = new SparkMax(10, MotorType.kBrushed);
+    SparkMax indexMotor = new SparkMax(9, MotorType.kBrushed);
 
     SparkMaxConfig mainMotorFollowerConfig = new SparkMaxConfig();
 
