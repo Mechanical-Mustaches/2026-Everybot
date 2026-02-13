@@ -35,7 +35,7 @@ public class ClimberSubsystem implements Subsystem {
         // main climber configuration:
 
         // TODO: Get motor ID
-        mainClimber = new SparkMax(10, MotorType.kBrushed);
+        mainClimber = new SparkMax(9, MotorType.kBrushed);
 
         mainClimberConfig = new SparkMaxConfig();
 
@@ -60,58 +60,18 @@ public class ClimberSubsystem implements Subsystem {
 
         mainClimber.configure(mainClimberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        // TODO: get real motor ID
 
     }
-
-    public boolean isExtended(int stage) {
-        double position = mainClimber.getEncoder().getPosition();
-
-        if (stage == 0) {
-            return Math.abs(position - MAIN_EXTEND_RANGE) <= MAIN_TOLERANCE;
-        }
-        if (stage == 1) {
-            return Math.abs(position - SECONDARY_EXTEND_RANGE) <= SECONDARY_TOLERANCE;
-        }
-        return false;
+    public void climb(){
+        mainClimber.set(.25);
     }
 
-    public boolean isRetracted(int stage) {
-        double position = mainClimber.getEncoder().getPosition();
-
-        if (stage == 0) {
-            return Math.abs(position - MAIN_CLIMB_RANGE) <= MAIN_TOLERANCE;
-        }
-        if (stage == 1) {
-            return Math.abs(position - SECONDARY_CLIMB_RANGE) <= SECONDARY_TOLERANCE;
-        }
-        return false;
-    }
-
-    public void extend(int stage) {
-        var controller = mainClimber.getClosedLoopController();
-
-        if (stage == 0) {
-            controller.setReference(MAIN_EXTEND_RANGE, ControlType.kPosition);
-
-        } else if (stage == 1) {
-            controller.setReference(SECONDARY_EXTEND_RANGE, ControlType.kPosition);
-        }
-    }
-
-    public void retract(int stage) {
-        var controller = mainClimber.getClosedLoopController();
-
-        if (stage == 0) {
-            controller.setReference(MAIN_CLIMB_RANGE, ControlType.kPosition);
-
-        } else if (stage == 1) {
-            controller.setReference(SECONDARY_CLIMB_RANGE, ControlType.kPosition);
-        }
+    public void unclimb(){
+        mainClimber.set(-.25);
     }
 
     public void stop() {
-        mainClimber.stopMotor();
+        mainClimber.set(0);
     }
 
 }

@@ -18,26 +18,13 @@ public class ClimberCommand extends Command {
 
     @Override
     public void initialize() {
-        if (extend) {
-            climberSubsystem.extend(stage);
-
-        } else {
-            climberSubsystem.retract(stage);
-        }
-    }
-
-    @Override
-    public boolean isFinished() { // cheks is the motors are whitin their range and report
-        if (this.extend) {
-            return climberSubsystem.isExtended(stage);
-        }
-
-        return climberSubsystem.isRetracted(stage);
+        climberSubsystem.climb();
+        climberSubsystem.unclimb();
 
     }
 
     @Override
-    public void end(boolean interrupted) {
+    public void end(boolean interrupted){
         climberSubsystem.stop();
     }
 }
