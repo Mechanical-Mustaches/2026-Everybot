@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.VecBuilder;
@@ -10,6 +11,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,6 +24,7 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 public class SwerveDriveSubsystem extends SubsystemBase {
     private final SwerveDrive swerveDrive;
     private final SwerveDrivePoseEstimator poseEstimator;
+    private final Field2d m_field;
 
     public SwerveDriveSubsystem() {
         try {
@@ -44,6 +47,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
                 rotation,
                 swerveDrive.getModulePositions(),
                 new Pose2d());
+
+        this.m_field = new Field2d();
     }
 
     public Pose2d getPose() {
@@ -94,15 +99,29 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     public void periodic() {
         // First, tell Limelight your robot's current orientation
         double robotYaw = swerveDrive.getGyro().getRotation3d().getY();
-        LimelightHelpers.SetRobotOrientation("", robotYaw, 0.0, 0.0, 0.0, 0.0, 0.0);
+
+        LimelightHelpers.SetRobotOrientation("limelight-front", robotYaw, 0.0, 0.0, 0.0, 0.0, 0.0);
+        LimelightHelpers.SetRobotOrientation("limelight-back", robotYaw, 0.0, 0.0, 0.0, 0.0, 0.0);
 
         // Get the pose estimate
-        LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
+        LimelightHelpers.PoseEstimate frontLimelightMeasurement = LimelightHelpers
+                .getBotPoseEstimate_wpiBlue_MegaTag2("limelight-front");
+        LimelightHelpers.PoseEstimate backLimelightMeasurement = LimelightHelpers
+                .getBotPoseEstimate_wpiBlue_MegaTag2("limelight-back");
 
         // Add it to your pose estimator
         poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
-        poseEstimator.addVisionMeasurement(
-                limelightMeasurement.pose,
-                limelightMeasurement.timestampSeconds);
+
+        if (frontLimelightMeasurement != null) {
+            poseEstimator.addVisionMeasurement(
+                    frontLimelightMeasurement.pose,
+                    frontLimelightMeasurement.timestampSeconds);
+        }
+        if (backLimelightMeasurement != null) {
+            poseEstimator.addVisionMeasurement(
+                    backLimelightMeasurement.pose,
+                    backLimelightMeasurement.timestampSeconds);
+        }
+        m_field.setRobotPose(getPose());
     }
 }
