@@ -7,19 +7,14 @@ public class ClimberCommand extends Command {
 
     // TODO imploment/ create command for buttons
     ClimberSubsystem climberSubsystem;
-    boolean extend;
-    int stage;
 
-    public ClimberCommand(ClimberSubsystem climberSubsystem, boolean extend, int stage) {
-        this.extend = extend;
+    public ClimberCommand(ClimberSubsystem climberSubsystem) {
         this.climberSubsystem = climberSubsystem;
-        this.stage = stage;
     }
 
     @Override
     public void initialize() {
         climberSubsystem.climb();
-        climberSubsystem.unclimb();
 
     }
 
