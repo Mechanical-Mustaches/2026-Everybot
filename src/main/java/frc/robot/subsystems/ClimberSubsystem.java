@@ -18,8 +18,8 @@ public class ClimberSubsystem implements Subsystem {
     private static int MAIN_EXTEND_RANGE = 1;
     private static int SECONDARY_EXTEND_RANGE = -1;
 
-    private static double MAIN_CLIMB_RANGE = 1;
-    private static double  SECONDARY_CLIMB_RANGE = -1;
+    private static int MAIN_CLIMB_RANGE = 1;
+    private static int SECONDARY_CLIMB_RANGE = -1;
 
     private static double MAIN_TOLERANCE = 0.7;
     private static double SECONDARY_TOLERANCE = 0.7;
@@ -31,21 +31,20 @@ public class ClimberSubsystem implements Subsystem {
     private ClosedLoopConfig mainClimberClosedLoopConfig;
 
     public ClimberSubsystem() {
-        // main climber configuration:
 
-        // TODO: Get motor ID
+        // main climber configuration:
         mainClimber = new SparkMax(9, MotorType.kBrushed);
 
         mainClimberConfig = new SparkMaxConfig();
 
-        // TODO: Update PID constants
+        // TODO: Update PID constants if needed
         mainClimberClosedLoopConfig = new ClosedLoopConfig()
                 .pid(0.1, 0, 0)
                 .outputRange(MAIN_EXTEND_RANGE, MAIN_CLIMB_RANGE)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
         SoftLimitConfig softLimits = new SoftLimitConfig()
-                .forwardSoftLimit(SECONDARY_CLIMB_RANGE)/// set to -10 rotations
+                .forwardSoftLimit(SECONDARY_CLIMB_RANGE)/// set to -1 rotations
                 .reverseSoftLimit(SECONDARY_EXTEND_RANGE)// set to 1 torations
                 .forwardSoftLimitEnabled(true)
                 .reverseSoftLimitEnabled(true);
@@ -63,16 +62,15 @@ public class ClimberSubsystem implements Subsystem {
     }
 
     public void climb() {
-        double target = MAIN_CLIMB_RANGE;
+       double target= MAIN_CLIMB_RANGE;
         double position = mainClimber.getEncoder().getPosition();
         if (position < target) {
             mainClimber.set(.25);
         } 
     }
 
-
     public void unClimb() {
-        double target = SECONDARY_CLIMB_RANGE;
+        double target= SECONDARY_CLIMB_RANGE;
         double position = mainClimber.getEncoder().getPosition();
         if (position < target) {
             mainClimber.set(-.25);
