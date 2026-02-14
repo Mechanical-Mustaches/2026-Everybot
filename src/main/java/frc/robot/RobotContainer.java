@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.lang.annotation.Target;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -78,10 +80,10 @@ public class RobotContainer {
     m_gunnerController.button(1).whileTrue(new IntakeCommand(intakeSubsystem));
     m_gunnerController.button(3).whileTrue(new FeedCommand(intakeSubsystem));
 
-    m_gunnerController.button(2).whileTrue(new ClimberCommand(climberSubsystem));
-    m_gunnerController.button(5).whileTrue(new InstantCommand(() -> climberSubsystem.unclimb()));
+    m_gunnerController.button(2).whileTrue(new InstantCommand(() -> climberSubsystem.climb()));
+    m_gunnerController.button(2).onFalse(new InstantCommand(() -> climberSubsystem.stop()));
+    m_gunnerController.button(5).whileTrue(new InstantCommand(() -> climberSubsystem.unClimb()));
     m_gunnerController.button(5).onFalse(new InstantCommand(() -> climberSubsystem.stop()));
-
   }
 
   /**
