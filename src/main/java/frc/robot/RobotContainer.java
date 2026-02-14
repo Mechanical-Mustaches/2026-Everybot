@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.lang.annotation.Target;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -74,18 +76,14 @@ public class RobotContainer {
         () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(0), 0.1),
         () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0.1)));
 
-    m_driverController.a().whileTrue(new ClimberCommand(climberSubsystem, true, 0));
-    m_driverController.a().whileFalse(new ClimberCommand(climberSubsystem, false, 0));
-
     m_gunnerController.button(4).whileTrue(new ShootCommand(intakeSubsystem));
     m_gunnerController.button(1).whileTrue(new IntakeCommand(intakeSubsystem));
     m_gunnerController.button(3).whileTrue(new FeedCommand(intakeSubsystem));
 
     m_gunnerController.button(2).whileTrue(new InstantCommand(() -> climberSubsystem.climb()));
     m_gunnerController.button(2).onFalse(new InstantCommand(() -> climberSubsystem.stop()));
-    m_gunnerController.button(5).whileTrue(new InstantCommand(() -> climberSubsystem.unclimb()));
+    m_gunnerController.button(5).whileTrue(new InstantCommand(() -> climberSubsystem.unClimb()));
     m_gunnerController.button(5).onFalse(new InstantCommand(() -> climberSubsystem.stop()));
-
   }
 
   /**
