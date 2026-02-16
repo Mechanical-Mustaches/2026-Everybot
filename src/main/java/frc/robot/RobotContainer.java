@@ -16,6 +16,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.FeedCommand;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.MoveToScoreCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -75,6 +76,10 @@ public class RobotContainer {
         () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(1), 0.1),
         () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(0), 0.1),
         () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0.1)));
+
+        m_driverController.leftBumper().whileTrue(new MoveToScoreCommand(swerveDriveSubsystem));
+        m_driverController.rightBumper().onTrue(new InstantCommand(()->swerveDriveSubsystem.resetGyro()));
+      
 
     m_gunnerController.button(4).whileTrue(new ShootCommand(intakeSubsystem));
     m_gunnerController.button(1).whileTrue(new IntakeCommand(intakeSubsystem));

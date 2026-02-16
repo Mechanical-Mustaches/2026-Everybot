@@ -40,8 +40,9 @@ public class ClimberSubsystem implements Subsystem {
         // TODO: Update PID constants if needed
         mainClimberClosedLoopConfig = new ClosedLoopConfig()
                 .pid(0.1, 0, 0)
-                .outputRange(MAIN_EXTEND_RANGE, MAIN_CLIMB_RANGE)
-                .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder);
+                .outputRange(MAIN_EXTEND_RANGE, MAIN_CLIMB_RANGE);
+                
+                // .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder);
 
         SoftLimitConfig softLimits = new SoftLimitConfig()
                 .forwardSoftLimit(MAIN_CLIMB_RANGE)/// set to -1 rotations
@@ -58,7 +59,7 @@ public class ClimberSubsystem implements Subsystem {
 
         mainClimber.configure(mainClimberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        mainClimber.getAlternateEncoder().getPosition();
+        // mainClimber.getAlternateEncoder().getPosition();
     }
 
     public void climb() {

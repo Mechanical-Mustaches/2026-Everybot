@@ -5,11 +5,19 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.function.DoubleSupplier;
 
+import javax.sound.sampled.Line;
+
+import org.dyn4j.geometry.Circle;
+import org.opencv.core.Point;
+import java.awt.geom.*;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,6 +33,17 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     private final SwerveDrive swerveDrive;
     private final SwerveDrivePoseEstimator poseEstimator;
     private final Field2d m_field;
+    private static Point kRedHubPoint = new Point(4.034663,4.625594);
+    private static Point kBlueHubPoint = new Point(4.034663,4.625594);
+    private static double kScoringRadius = 2;
+    public static Point getHubPoint(){
+        if(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue){
+            return kBlueHubPoint;
+        } else {
+            return kRedHubPoint;
+        }
+    }
+    
 
     public SwerveDriveSubsystem() {
         try {
@@ -53,8 +72,30 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         SmartDashboard.putData("swerveField", m_field);
     }
 
+    public Point getNearestScoringPoint(){
+        Point robotPoint = new Point(getPose().getX(),getPose().getY());
+        double slope = ((robotPoint.y-getHubPoint().y)/(robotPoint.x-getHubPoint().x));
+        
+        
+        double horizontalDistance = kScoringRadius/Math.sqrt((slope*slope)+1);
+        double verticalDistance = Math.sqrt((slope*slope)/(horizontalDistance*horizontalDistance));
+
+        Point scoringPoint = new Point(getHubPoint().x-horizontalDistance, getHubPoint().y-verticalDistance);
+
+        return scoringPoint;
+
+    }
+
+    public double getRotationToPoint(Point point){
+        return Math.atan((point.y-getPose().getY())/(point.x-getPose().getX()));
+    }
+
     public Pose2d getPose() {
         return poseEstimator.getEstimatedPosition();
+    }
+
+    public void resetGyro(){
+        swerveDrive.setGyro(new Rotation3d(0,0,0));
     }
 
     /**
