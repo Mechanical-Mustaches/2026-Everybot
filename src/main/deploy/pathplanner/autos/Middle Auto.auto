@@ -7,19 +7,38 @@
         {
           "type": "named",
           "data": {
-            "name": null
+            "name": "AlignScore"
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "Middle Straight to Climb Path"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 4.0
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": null
+            "name": "AlignClimb"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Climb"
           }
         }
       ]

@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.FeedCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.MoveToScoreCommand;
@@ -62,6 +63,9 @@ public class RobotContainer {
     
     // NamedCommands.registerCommand("AlignClimb", );
     NamedCommands.registerCommand("Shoot", new ShootCommand(intakeSubsystem));
+    NamedCommands.registerCommand("Climb", new ClimberCommand(climberSubsystem));
+    NamedCommands.registerCommand("AlignScore", new MoveToScoreCommand(swerveDriveSubsystem));
+    NamedCommands.registerCommand("AlignClimb", new MoveToScoreCommand(swerveDriveSubsystem));
 
     configureBindings();
 
