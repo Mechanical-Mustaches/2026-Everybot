@@ -31,7 +31,6 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class SwerveDriveSubsystem extends SubsystemBase {
     private final SwerveDrive swerveDrive;
-    private final SwerveDrivePoseEstimator poseEstimator;
     private final Field2d m_field;
     private static Point kRedHubPoint = new Point(4.034663,4.625594);
     private static Point kBlueHubPoint = new Point(4.034663,4.625594);
@@ -62,10 +61,9 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         var rotation = new Rotation2d(swerveDrive.getGyroRotation3d().getX(), swerveDrive.getGyroRotation3d().getY());
 
-        this.poseEstimator = new SwerveDrivePoseEstimator(swerveDrive.kinematics,
-                rotation,
-                swerveDrive.getModulePositions(),
-                new Pose2d());
+        
+
+     
 
         this.m_field = new Field2d();
 
@@ -91,7 +89,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     }
 
     public Pose2d getPose() {
-        return poseEstimator.getEstimatedPosition();
+        return swerveDrive.getPose();
     }
 
     public void resetGyro(){
@@ -153,10 +151,11 @@ public class SwerveDriveSubsystem extends SubsystemBase {
                 .getBotPoseEstimate_wpiBlue_MegaTag2("limelight-back");
 
         // Add it to your pose estimator
-        poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
+        swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
 
         if (frontLimelightMeasurement != null) {
-            poseEstimator.addVisionMeasurement(
+            if(backLimelightMeasurement.pose.getX()>=0 || backLimelightMeasurement.pose.getY()>=0){
+            swerveDrive.addVisionMeasurement(
                     frontLimelightMeasurement.pose,
                     frontLimelightMeasurement.timestampSeconds);
             double[] frontLimelightEstimatedPose = { frontLimelightMeasurement.pose.getX(),
@@ -164,9 +163,11 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             SmartDashboard.putNumberArray("frontLimelightEstimatedPose", frontLimelightEstimatedPose);
             SmartDashboard.putNumber("frontLimelightAveragedist",
                     LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-front").avgTagDist);
+            }
         }
-        if (backLimelightMeasurement != null) {
-            poseEstimator.addVisionMeasurement(
+        if (backLimelightMeasurement != null ) {
+            if(backLimelightMeasurement.pose.getX()>=0 || backLimelightMeasurement.pose.getY()>=0){
+            swerveDrive.addVisionMeasurement(
                     backLimelightMeasurement.pose,
                     backLimelightMeasurement.timestampSeconds);
             double[] backLimelightEstimatedPose = { backLimelightMeasurement.pose.getX(),
@@ -174,8 +175,9 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             SmartDashboard.putNumberArray("backLimelightEstimatedPose", backLimelightEstimatedPose);
             SmartDashboard.putNumber("backLimelightAveragedist",
                     LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-back").avgTagDist);
+            }
         }
-        poseEstimator.update(swerveDrive.getGyroRotation3d().toRotation2d(), swerveDrive.getModulePositions());
+        
         m_field.setRobotPose(getPose());
 
     }
