@@ -41,11 +41,11 @@ public class ClimberSubsystem implements Subsystem {
         mainClimberClosedLoopConfig = new ClosedLoopConfig()
                 .pid(0.1, 0, 0)
                 .outputRange(MAIN_EXTEND_RANGE, MAIN_CLIMB_RANGE)
-                .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+                .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder);
 
         SoftLimitConfig softLimits = new SoftLimitConfig()
-                .forwardSoftLimit(SECONDARY_CLIMB_RANGE)/// set to -1 rotations
-                .reverseSoftLimit(SECONDARY_EXTEND_RANGE)// set to 1 torations
+                .forwardSoftLimit(MAIN_CLIMB_RANGE)/// set to -1 rotations
+                .reverseSoftLimit(SECONDARY_CLIMB_RANGE)// set to 1 torations
                 .forwardSoftLimitEnabled(true)
                 .reverseSoftLimitEnabled(true);
 
