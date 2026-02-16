@@ -1,82 +1,79 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.REVLibError;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.FeedbackSensor;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SoftLimitConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public class ClimberSubsystem implements Subsystem {
 
-    private static int MAIN_EXTEND_RANGE = 1;
-    private static int SECONDARY_EXTEND_RANGE = -1;
-
-    private static int MAIN_CLIMB_RANGE = 1;
-    private static int SECONDARY_CLIMB_RANGE = -1;
-
-    private static double MAIN_TOLERANCE = 0.7;
-    private static double SECONDARY_TOLERANCE = 0.7;
-
-    private SparkMax mainClimber;
-
-    private SparkMaxConfig mainClimberConfig;
-
+    private SparkMax mainClimber = new SparkMax(9, MotorType.kBrushed);
+    private SparkMaxConfig mainClimberConfig = new SparkMaxConfig();
     private ClosedLoopConfig mainClimberClosedLoopConfig;
+
+     public enum Stage{
+        S1(2000),
+        S2(4000);
+  
+        public final double encoderValue;
+
+        private Stage(double stage){
+            this.encoderValue = stage;
+        }
+
+    }
 
     public ClimberSubsystem() {
 
-        // main climber configuration:
-        mainClimber = new SparkMax(9, MotorType.kBrushed);
-
-        mainClimberConfig = new SparkMaxConfig();
-
-        // TODO: Update PID constants if needed
         mainClimberClosedLoopConfig = new ClosedLoopConfig()
                 .pid(0.1, 0, 0)
-                .outputRange(MAIN_EXTEND_RANGE, MAIN_CLIMB_RANGE)
-                .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder);
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
-        SoftLimitConfig softLimits = new SoftLimitConfig()
-                .forwardSoftLimit(MAIN_CLIMB_RANGE)/// set to -1 rotations
-                .reverseSoftLimit(SECONDARY_CLIMB_RANGE)// set to 1 torations
-                .forwardSoftLimitEnabled(true)
-                .reverseSoftLimitEnabled(true);
 
         mainClimberConfig
-                // TODO: Find range of rotations needed
                 .smartCurrentLimit(40)
-                .idleMode(IdleMode.kBrake)// kBrake prevent motor from moving when force is applied
-                .apply(mainClimberClosedLoopConfig)
-                .apply(softLimits);
+                .idleMode(IdleMode.kBrake)
+                .apply(mainClimberClosedLoopConfig);
 
         mainClimber.configure(mainClimberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-        mainClimber.getAlternateEncoder().getPosition();
     }
 
     public void climb() {
-       double target= MAIN_CLIMB_RANGE;
+        double target = Stage.S1.encoderValue;
         double position = mainClimber.getEncoder().getPosition();
         if (position < target) {
             mainClimber.set(.25);
         } 
+        SmartDashboard.putNumber("climberEncoder", position);
     }
 
     public void unClimb() {
-        double target= SECONDARY_CLIMB_RANGE;
+        double target = Stage.S2.encoderValue;
         double position = mainClimber.getEncoder().getPosition();
         if (position < target) {
             mainClimber.set(-.25);
         }
     }
 
+    public void dumbClimb(){
+        mainClimber.set(.25);
+        SmartDashboard.putNumber("climberEncoder", mainClimber.getEncoder().getPosition());
+    }
+    public void dumbUnClimb(){
+        mainClimber.set(-.25);
+        SmartDashboard.putNumber("climberEncoder", mainClimber.getEncoder().getPosition());
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("climberEncoder", mainClimber.getEncoder().getPosition());
+    }
 
   public void stop(){
     mainClimber.set(0);

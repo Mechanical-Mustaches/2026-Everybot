@@ -13,19 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Middle Straight Path"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": null
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Middle Turn to Climb Path"
+            "pathName": "Middle Straight to Climb Path"
           }
         },
         {
