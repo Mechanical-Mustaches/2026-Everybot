@@ -5,9 +5,12 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
@@ -17,9 +20,18 @@ public class ClimberSubsystem implements Subsystem {
     private SparkMaxConfig mainClimberConfig = new SparkMaxConfig();
     private ClosedLoopConfig mainClimberClosedLoopConfig;
 
+    private DutyCycleEncoder throughBoreEncoder = new DutyCycleEncoder(0);
+
+    /**
+     * Depicts the stage the climber should travel to
+     * <p> -  S0 -> Horizontal
+     * <p> -  S1 -> L1 Climb position
+     * <p> -  S2 -> L2 Climb position
+     */
      public enum Stage{
-        S1(2000),
-        S2(4000);
+        S0(0),
+        S1(.1),
+        S2(.2);
   
         public final double encoderValue;
 
@@ -32,8 +44,8 @@ public class ClimberSubsystem implements Subsystem {
     public ClimberSubsystem() {
 
         mainClimberClosedLoopConfig = new ClosedLoopConfig()
-                .pid(0.1, 0, 0)
-                .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+                .pid(0.1, 0, 0);
+                
 
 
         mainClimberConfig
@@ -59,6 +71,9 @@ public class ClimberSubsystem implements Subsystem {
         if (position < target) {
             mainClimber.set(-.25);
         }
+
+        
+        mainClimber.getClosedLoopController().setSetpoint(position, ControlType.kPosition); 
     }
 
     public void dumbClimb(){
@@ -70,12 +85,23 @@ public class ClimberSubsystem implements Subsystem {
         SmartDashboard.putNumber("climberEncoder", mainClimber.getEncoder().getPosition());
     }
 
-    @Override
-    public void periodic() {
-        SmartDashboard.putNumber("climberEncoder", mainClimber.getEncoder().getPosition());
-    }
+    
 
   public void stop(){
     mainClimber.set(0);
   }
+
+  public boolean isDone(Stage stage){
+        if(mainClimber.getEncoder().getPosition() >= stage.encoderValue){
+            return true;
+        } else {
+            return false;
+        }
+  }
+
+
+  @Override
+    public void periodic() {
+        SmartDashboard.putNumber("climberEncoder", mainClimber.getEncoder().getPosition());
+    }
 }

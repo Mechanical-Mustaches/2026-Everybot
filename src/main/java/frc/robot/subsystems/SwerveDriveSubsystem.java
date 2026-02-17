@@ -140,7 +140,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         swerveDrive.setGyro(new Rotation3d(0,0,0));
     }
 
-    //unsure
     public Rotation2d getYaw() {
         return swerveDrive.getYaw();
     }
@@ -160,7 +159,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     public void driveFieldRelative(ChassisSpeeds chassisSpeeds) {
         swerveDrive.driveFieldOriented(chassisSpeeds);
     }
-    //unsure end
 
     /**
      * Command to drive the robot using translative values and heading as a
