@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import swervelib.SwerveDrive;
@@ -45,18 +46,18 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     private SwerveDriveOdometry swerveDriveOdometry;
     private SwerveDriveKinematics swerveDriveKinematics;
 
-    private static Point kRedHubPoint = new Point(4.034663,4.625594);
-    private static Point kBlueHubPoint = new Point(4.034663,4.625594);
+    private static Point kRedHubPoint = new Point(4.034663, 4.625594);
+    private static Point kBlueHubPoint = new Point(4.034663, 4.625594);
     private static double kScoringRadius = 2;
-    public static Point getHubPoint(){
 
-        if(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue){
+    public static Point getHubPoint() {
+
+        if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
             return kBlueHubPoint;
         } else {
             return kRedHubPoint;
         }
     }
-    
 
     public SwerveDriveSubsystem() {
         try {
@@ -114,61 +115,59 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         var rotation = new Rotation2d(swerveDrive.getGyroRotation3d().getX(), swerveDrive.getGyroRotation3d().getY());
 
-        
-
-     
-
         this.m_field = new Field2d();
 
         SmartDashboard.putData("swerveField", m_field);
         var modules = swerveDrive.getModules();
-        swerveDriveKinematics = new SwerveDriveKinematics(modules[0].getConfiguration().moduleLocation, modules[1].getConfiguration().moduleLocation, modules[2].getConfiguration().moduleLocation, modules[3].getConfiguration().moduleLocation);
+        swerveDriveKinematics = new SwerveDriveKinematics(modules[0].getConfiguration().moduleLocation,
+                modules[1].getConfiguration().moduleLocation, modules[2].getConfiguration().moduleLocation,
+                modules[3].getConfiguration().moduleLocation);
 
-        swerveDriveOdometry = new SwerveDriveOdometry(swerveDriveKinematics, getYaw(), swerveDrive.getModulePositions());
+        swerveDriveOdometry = new SwerveDriveOdometry(swerveDriveKinematics, getYaw(),
+                swerveDrive.getModulePositions());
 
-        poseEstimator = new SwerveDrivePoseEstimator(swerveDriveKinematics, getYaw(), swerveDrive.getModulePositions(), getPose());
+        poseEstimator = new SwerveDrivePoseEstimator(swerveDriveKinematics, getYaw(), swerveDrive.getModulePositions(),
+                getPose());
     }
 
-    public Point getNearestScoringPoint(){
-        Point robotPoint = new Point(getPose().getX(),getPose().getY());
-        double slope = ((robotPoint.y-getHubPoint().y)/(robotPoint.x-getHubPoint().x));
-        
-        
-        double horizontalDistance = kScoringRadius/Math.sqrt((slope*slope)+1);
-        double verticalDistance = Math.sqrt((slope*slope)/(horizontalDistance*horizontalDistance));
+    public Point getNearestScoringPoint() {
+        Point robotPoint = new Point(getPose().getX(), getPose().getY());
+        double slope = ((robotPoint.y - getHubPoint().y) / (robotPoint.x - getHubPoint().x));
 
-        Point scoringPoint = new Point(getHubPoint().x-horizontalDistance, getHubPoint().y-verticalDistance);
+        double horizontalDistance = kScoringRadius / Math.sqrt((slope * slope) + 1);
+        double verticalDistance = Math.sqrt((slope * slope) / (horizontalDistance * horizontalDistance));
+
+        Point scoringPoint = new Point(getHubPoint().x - horizontalDistance, getHubPoint().y - verticalDistance);
 
         return scoringPoint;
 
     }
 
-    public double getRotationToPoint(Point point){
-        return Math.atan((point.y-getPose().getY())/(point.x-getPose().getX()));
+    public double getRotationToPoint(Point point) {
+        return Math.atan((point.y - getPose().getY()) / (point.x - getPose().getX()));
     }
 
     public Pose2d getPose() {
-         return swerveDrive.getPose();
+        return swerveDrive.getPose();
     }
 
-    public Pose2d getOtherPose(){
+    public Pose2d getOtherPose() {
         return poseEstimator.getEstimatedPosition();
     }
 
-    public void resetGyro(){
-        swerveDrive.setGyro(new Rotation3d(0,0,0));
+    public void resetGyro() {
+        swerveDrive.setGyro(new Rotation3d(0, 0, 0));
     }
 
-    
-    public double getMaximumChassisVelocity(){
+    public double getMaximumChassisVelocity() {
         return swerveDrive.getMaximumChassisVelocity();
     }
 
-    public double getMaximumChassisAngularVelocity(){
+    public double getMaximumChassisAngularVelocity() {
         return swerveDrive.getMaximumChassisAngularVelocity();
     }
 
-    //unsure
+    // unsure
     public Rotation2d getYaw() {
         return swerveDrive.getYaw();
     }
@@ -247,40 +246,35 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
 
         if (frontLimelightMeasurement != null) {
-            if(backLimelightMeasurement.pose.getX()>=0 || backLimelightMeasurement.pose.getY()>=0){
-            swerveDrive.addVisionMeasurement(
-                    frontLimelightMeasurement.pose,
-                    frontLimelightMeasurement.timestampSeconds);
-            double[] frontLimelightEstimatedPose = { frontLimelightMeasurement.pose.getX(),
-                    frontLimelightMeasurement.pose.getY() };
-            SmartDashboard.putNumberArray("frontLimelightEstimatedPose", frontLimelightEstimatedPose);
-            SmartDashboard.putNumber("frontLimelightAveragedist",
-                    LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-front").avgTagDist);
+            if (backLimelightMeasurement.pose.getX() >= 0 || backLimelightMeasurement.pose.getY() >= 0) {
+                swerveDrive.addVisionMeasurement(
+                        frontLimelightMeasurement.pose,
+                        frontLimelightMeasurement.timestampSeconds);
+                double[] frontLimelightEstimatedPose = { frontLimelightMeasurement.pose.getX(),
+                        frontLimelightMeasurement.pose.getY() };
+                SmartDashboard.putNumberArray("frontLimelightEstimatedPose", frontLimelightEstimatedPose);
+                SmartDashboard.putNumber("frontLimelightAveragedist",
+                        LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-front").avgTagDist);
             }
         }
-        if (backLimelightMeasurement != null ) {
-            if(backLimelightMeasurement.pose.getX()>=0 || backLimelightMeasurement.pose.getY()>=0){
-            swerveDrive.addVisionMeasurement(
-                    backLimelightMeasurement.pose,
-                    backLimelightMeasurement.timestampSeconds);
-            double[] backLimelightEstimatedPose = { backLimelightMeasurement.pose.getX(),
-                    backLimelightMeasurement.pose.getY() };
-            SmartDashboard.putNumberArray("backLimelightEstimatedPose", backLimelightEstimatedPose);
-            SmartDashboard.putNumber("backLimelightAveragedist",
-                    LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-back").avgTagDist);
+        if (backLimelightMeasurement != null) {
+            if (backLimelightMeasurement.pose.getX() >= 0 || backLimelightMeasurement.pose.getY() >= 0) {
+                swerveDrive.addVisionMeasurement(
+                        backLimelightMeasurement.pose,
+                        backLimelightMeasurement.timestampSeconds);
+                double[] backLimelightEstimatedPose = { backLimelightMeasurement.pose.getX(),
+                        backLimelightMeasurement.pose.getY() };
+                SmartDashboard.putNumberArray("backLimelightEstimatedPose", backLimelightEstimatedPose);
+                SmartDashboard.putNumber("backLimelightAveragedist",
+                        LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-back").avgTagDist);
             }
         }
-        
+
         m_field.setRobotPose(getOtherPose());
 
         swerveDrive.updateOdometry();
 
         poseEstimator.update(getYaw(), swerveDrive.getModulePositions());
-
-        
-
-        
-        
 
     }
 }

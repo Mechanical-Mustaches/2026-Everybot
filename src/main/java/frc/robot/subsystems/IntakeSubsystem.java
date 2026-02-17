@@ -6,13 +6,15 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class IntakeSubsystem implements Subsystem {
+public class IntakeSubsystem extends SubsystemBase {
 
     SparkMax mainMotor = new SparkMax(12, MotorType.kBrushless);
     SparkMax mainMotorFollower = new SparkMax(11, MotorType.kBrushless);
-    SparkMax indexMotor = new SparkMax(10, MotorType.kBrushed);
+    SparkMax indexMotor = new SparkMax(10, MotorType.kBrushless);
 
     SparkMaxConfig mainMotorFollowerConfig = new SparkMaxConfig();
 
@@ -50,6 +52,11 @@ public class IntakeSubsystem implements Subsystem {
     public void feed() {
         indexOut();
         shoot();
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("intakeEncoderTest", mainMotor.getEncoder().getPosition());
     }
 
 }

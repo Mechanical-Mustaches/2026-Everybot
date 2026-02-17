@@ -25,7 +25,6 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
-
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a
@@ -43,7 +42,6 @@ public class RobotContainer {
 
   private final SendableChooser<Command> autoChooser;
 
-
   private final CommandXboxController m_driverController = new CommandXboxController(
       OperatorConstants.kDriverControllerPort);
 
@@ -60,7 +58,7 @@ public class RobotContainer {
     climberSubsystem = new ClimberSubsystem();
     intakeSubsystem = new IntakeSubsystem();
     // Configure the trigger bindings
-    
+
     // NamedCommands.registerCommand("AlignClimb", );
     NamedCommands.registerCommand("Shoot", new ShootCommand(intakeSubsystem));
     NamedCommands.registerCommand("Climb", new ClimberCommand(climberSubsystem));
@@ -70,7 +68,7 @@ public class RobotContainer {
     configureBindings();
 
     autoChooser = AutoBuilder.buildAutoChooser();
-                SmartDashboard.putData("Auto Chooser", autoChooser);
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   /**
@@ -93,9 +91,8 @@ public class RobotContainer {
         () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(0), 0.1),
         () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0.1)));
 
-        m_driverController.leftBumper().whileTrue(new MoveToScoreCommand(swerveDriveSubsystem));
-        m_driverController.rightBumper().onTrue(new InstantCommand(()->swerveDriveSubsystem.resetGyro()));
-      
+    m_driverController.leftBumper().whileTrue(new MoveToScoreCommand(swerveDriveSubsystem));
+    m_driverController.rightBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
 
     m_gunnerController.button(4).whileTrue(new ShootCommand(intakeSubsystem));
     m_gunnerController.button(1).whileTrue(new IntakeCommand(intakeSubsystem));
@@ -115,11 +112,12 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    if (this.autoChooser != null){
+    if (this.autoChooser != null) {
       return autoChooser.getSelected();
-    }else{
+    } else {
       return null;
     }
-    
+
   }
+
 }
