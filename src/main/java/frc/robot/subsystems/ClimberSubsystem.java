@@ -101,4 +101,8 @@ public class ClimberSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("climberEncoder", mainClimber.getEncoder().getPosition());
         SmartDashboard.putNumber("climberAbsoluteEncoder", mainClimber.getAbsoluteEncoder().getPosition());
     }
+
+    public double getEncoderPosition(){
+        return mainClimber.getEncoder().getPosition();
+    }
 }

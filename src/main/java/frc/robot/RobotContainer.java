@@ -25,6 +25,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
+import frc.robot.subsystems.ClimberSubsystem.Stage;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -103,9 +104,11 @@ public class RobotContainer {
 
     // m_gunnerController.button(2).whileTrue(new ClimberCommand(climberSubsystem));
 
-    m_gunnerController.button(2).whileTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
+    m_gunnerController.button(2).whileTrue(new ClimberCommand(climberSubsystem, Stage.S1));
     m_gunnerController.button(2).onFalse(new InstantCommand(() -> climberSubsystem.stop()));
-    m_gunnerController.button(5).whileTrue(new InstantCommand(() -> climberSubsystem.dumbUnClimb()));
+    m_gunnerController.button(3).whileTrue(new ClimberCommand(climberSubsystem, Stage.S2));
+    m_gunnerController.button(3).onFalse(new InstantCommand(() -> climberSubsystem.stop()));
+    m_gunnerController.button(5).whileTrue(new ClimberCommand(climberSubsystem, Stage.S0));
     m_gunnerController.button(5).onFalse(new InstantCommand(() -> climberSubsystem.stop()));
   }
 

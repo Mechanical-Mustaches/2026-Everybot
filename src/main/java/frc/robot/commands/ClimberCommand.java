@@ -8,24 +8,36 @@ import frc.robot.subsystems.ClimberSubsystem.Stage;
 public class ClimberCommand extends Command {
 
     // TODO imploment/ create command for buttons
-    ClimberSubsystem climberSubsystem;
+    private final ClimberSubsystem climber;
+    private final Stage stage;
 
-    public ClimberCommand(ClimberSubsystem climberSubsystem) {
-        this.climberSubsystem = climberSubsystem;
+    public ClimberCommand(ClimberSubsystem climber, Stage stage) {
+        this.climber = climber;
+        this.stage = stage;
     }
 
     @Override
     public void initialize() {
-        climberSubsystem.climb();
+    }
+
+    @Override
+    public void execute() {
+        double curPos = climber.getEncoderPosition();
+        double target = stage.encoderValue;
+        if (curPos < target) {
+            climber.dumbClimb();
+        } else if (curPos > target) {
+            climber.dumbUnClimb();
+        }
     }
 
     @Override
     public boolean isFinished() {
-        return climberSubsystem.isDone(Stage.S1);
+        return climber.isDone(stage);
     }
 
     @Override
-    public void end(boolean interrupted){
-        climberSubsystem.stop();
+    public void end(boolean interrupted) {
+        climber.stop();
     }
 }
