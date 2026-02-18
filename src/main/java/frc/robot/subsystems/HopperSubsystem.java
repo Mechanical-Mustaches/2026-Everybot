@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class HopperSubsystem extends SubsystemBase {
     private SparkMax conveyorMotor = new SparkMax(13, MotorType.kBrushless);
 
-    public HopperSubsystem(SparkMax conveyorMotor) {
+    public HopperSubsystem() {
 
     }
 

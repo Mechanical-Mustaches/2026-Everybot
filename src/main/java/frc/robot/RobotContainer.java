@@ -22,6 +22,7 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.MoveToScoreCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
@@ -39,6 +40,7 @@ public class RobotContainer {
   public final ClimberSubsystem climberSubsystem;
   public final IntakeSubsystem intakeSubsystem;
   private final SwerveDriveSubsystem swerveDriveSubsystem;
+  private final HopperSubsystem hopperSubsystem;
 
   private final SendableChooser<Command> autoChooser;
 
@@ -57,10 +59,11 @@ public class RobotContainer {
     swerveDriveSubsystem = new SwerveDriveSubsystem();
     climberSubsystem = new ClimberSubsystem();
     intakeSubsystem = new IntakeSubsystem();
+    hopperSubsystem = new HopperSubsystem();
     // Configure the trigger bindings
 
     // NamedCommands.registerCommand("AlignClimb", );
-    NamedCommands.registerCommand("Shoot", new ShootCommand(intakeSubsystem));
+    NamedCommands.registerCommand("Shoot", new ShootCommand(intakeSubsystem, hopperSubsystem));
     NamedCommands.registerCommand("Climb", new ClimberCommand(climberSubsystem));
     NamedCommands.registerCommand("AlignScore", new MoveToScoreCommand(swerveDriveSubsystem));
     NamedCommands.registerCommand("AlignClimb", new MoveToScoreCommand(swerveDriveSubsystem));
@@ -94,8 +97,8 @@ public class RobotContainer {
     m_driverController.leftBumper().whileTrue(new MoveToScoreCommand(swerveDriveSubsystem));
     m_driverController.rightBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
 
-    m_gunnerController.button(4).whileTrue(new ShootCommand(intakeSubsystem));
-    m_gunnerController.button(1).whileTrue(new IntakeCommand(intakeSubsystem));
+    m_gunnerController.button(4).whileTrue(new ShootCommand(intakeSubsystem, hopperSubsystem));
+    m_gunnerController.button(1).whileTrue(new IntakeCommand(intakeSubsystem, hopperSubsystem));
     m_gunnerController.button(3).whileTrue(new FeedCommand(intakeSubsystem));
 
     // m_gunnerController.button(2).whileTrue(new ClimberCommand(climberSubsystem));
