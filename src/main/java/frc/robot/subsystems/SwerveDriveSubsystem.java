@@ -12,6 +12,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import javax.sound.sampled.Line;
 
 import org.dyn4j.geometry.Circle;
+import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import java.awt.geom.*;
 
@@ -48,6 +49,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     private static Point kRedHubPoint = new Point(4.034663, 4.625594);
     private static Point kBlueHubPoint = new Point(4.034663, 4.625594);
     private static double kScoringRadius = 2;
+    private static double kPositionTolerance = 0.01;
 
     public static Point getHubPoint() {
 
@@ -112,8 +114,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         swerveDrive.setMotorIdleMode(true);
 
-        var rotation = new Rotation2d(swerveDrive.getGyroRotation3d().getX(), swerveDrive.getGyroRotation3d().getY());
-
         this.m_field = new Field2d();
 
         SmartDashboard.putData("swerveField", m_field);
@@ -140,6 +140,19 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         return scoringPoint;
 
+    }
+
+    public double distanceToPoint(Point targetPoint) {
+        var dX = targetPoint.x - getPose().getX();
+        var dY = targetPoint.y - getPose().getY();
+        var dist = Math.sqrt((dX * dX) + (dY * dY));
+        return dist;
+    }
+
+    public void moveToPoint(Point targetPoint, boolean rotateToPoint) {
+        swerveDrive.drive(new ChassisSpeeds(
+                swerveDrive.getMaximumChassisVelocity() * 0.65 * Math.sin(getRotationToPoint(targetPoint)),
+                swerveDrive.getMaximumChassisVelocity() * 0.65 * Math.cos(getRotationToPoint(targetPoint)), 0));
     }
 
     public double getRotationToPoint(Point point) {
