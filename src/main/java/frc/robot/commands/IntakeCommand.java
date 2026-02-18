@@ -8,7 +8,7 @@ public class IntakeCommand extends Command {
     IntakeSubsystem intake;
     HopperSubsystem hopper;
 
-    public IntakeCommand(IntakeSubsystem intake, HopperSubsystem hopperSubsystem) {
+    public IntakeCommand(IntakeSubsystem intake, HopperSubsystem hopper) {
         this.intake = intake;
         this.hopper = hopper;
     }

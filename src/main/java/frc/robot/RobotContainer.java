@@ -110,11 +110,16 @@ public class RobotContainer {
     m_gunnerController.button(3).onFalse(new InstantCommand(() -> climberSubsystem.stop()));
     m_gunnerController.button(5).whileTrue(new ClimberCommand(climberSubsystem, Stage.S0));
     m_gunnerController.button(5).onFalse(new InstantCommand(() -> climberSubsystem.stop()));
+
+    m_gunnerController.button(11).onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
+    m_gunnerController.button(11).onFalse(new InstantCommand(() -> climberSubsystem.stop()));
+    m_gunnerController.button(12).onTrue(new InstantCommand(() -> climberSubsystem.dumbUnClimb()));
+    m_gunnerController.button(12).onFalse(new InstantCommand(() -> climberSubsystem.stop()));
   }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
+   * 
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
