@@ -22,9 +22,10 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.MoveToScoreCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
-
+import frc.robot.subsystems.ClimberSubsystem.Stage;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -40,9 +41,9 @@ public class RobotContainer {
   public final ClimberSubsystem climberSubsystem;
   public final IntakeSubsystem intakeSubsystem;
   private final SwerveDriveSubsystem swerveDriveSubsystem;
+  private final HopperSubsystem hopperSubsystem;
 
   private final SendableChooser<Command> autoChooser;
-
 
   private final CommandXboxController m_driverController = new CommandXboxController(
       OperatorConstants.kDriverControllerPort);
@@ -59,10 +60,11 @@ public class RobotContainer {
     swerveDriveSubsystem = new SwerveDriveSubsystem();
     climberSubsystem = new ClimberSubsystem();
     intakeSubsystem = new IntakeSubsystem();
+    hopperSubsystem = new HopperSubsystem();
     // Configure the trigger bindings
-    
+
     // NamedCommands.registerCommand("AlignClimb", );
-    NamedCommands.registerCommand("Shoot", new ShootCommand(intakeSubsystem));
+    NamedCommands.registerCommand("Shoot", new ShootCommand(intakeSubsystem, hopperSubsystem));
     NamedCommands.registerCommand("Climb", new ClimberCommand(climberSubsystem));
     NamedCommands.registerCommand("AlignScore", new MoveToScoreCommand(swerveDriveSubsystem));
     NamedCommands.registerCommand("AlignClimb", new MoveToScoreCommand(swerveDriveSubsystem));
@@ -70,7 +72,7 @@ public class RobotContainer {
     configureBindings();
 
     autoChooser = AutoBuilder.buildAutoChooser();
-                SmartDashboard.putData("Auto Chooser", autoChooser);
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   /**
@@ -93,19 +95,20 @@ public class RobotContainer {
         () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(0), 0.1),
         () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0.1)));
 
-        m_driverController.leftBumper().whileTrue(new MoveToScoreCommand(swerveDriveSubsystem));
-        m_driverController.rightBumper().onTrue(new InstantCommand(()->swerveDriveSubsystem.resetGyro()));
-      
+    m_driverController.leftBumper().whileTrue(new MoveToScoreCommand(swerveDriveSubsystem));
+    m_driverController.rightBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
 
-    m_gunnerController.button(4).whileTrue(new ShootCommand(intakeSubsystem));
-    m_gunnerController.button(1).whileTrue(new IntakeCommand(intakeSubsystem));
+    m_gunnerController.button(4).whileTrue(new ShootCommand(intakeSubsystem, hopperSubsystem));
+    m_gunnerController.button(1).whileTrue(new IntakeCommand(intakeSubsystem, hopperSubsystem));
     m_gunnerController.button(3).whileTrue(new FeedCommand(intakeSubsystem));
 
     // m_gunnerController.button(2).whileTrue(new ClimberCommand(climberSubsystem));
 
-    m_gunnerController.button(2).whileTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
+    m_gunnerController.button(2).whileTrue(new ClimberCommand(climberSubsystem, Stage.S1));
     m_gunnerController.button(2).onFalse(new InstantCommand(() -> climberSubsystem.stop()));
-    m_gunnerController.button(5).whileTrue(new InstantCommand(() -> climberSubsystem.dumbUnClimb()));
+    m_gunnerController.button(3).whileTrue(new ClimberCommand(climberSubsystem, Stage.S2));
+    m_gunnerController.button(3).onFalse(new InstantCommand(() -> climberSubsystem.stop()));
+    m_gunnerController.button(5).whileTrue(new ClimberCommand(climberSubsystem, Stage.S0));
     m_gunnerController.button(5).onFalse(new InstantCommand(() -> climberSubsystem.stop()));
   }
 
@@ -115,11 +118,12 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    if (this.autoChooser != null){
+    if (this.autoChooser != null) {
       return autoChooser.getSelected();
-    }else{
+    } else {
       return null;
     }
-    
+
   }
+
 }
