@@ -10,7 +10,8 @@ public class ClimberCommand extends Command {
     // TODO imploment/ create command for buttons
     ClimberSubsystem climberSubsystem;
 
-    public ClimberCommand(ClimberSubsystem climberSubsystem) {
+
+    public ClimberCommand(ClimberSubsystem climberSubsystem, ClimberSubsystem.Stage stage) {
         this.climberSubsystem = climberSubsystem;
     }
 

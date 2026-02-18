@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Go to Depot Path"
+            "pathName": "Straight Path"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Limited Paths Folder",
+  "folder": null,
   "choreoAuto": false
 }

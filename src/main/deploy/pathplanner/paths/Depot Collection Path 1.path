@@ -3,25 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.55,
-        "y": 4.0
+        "x": 1.15,
+        "y": 5.675
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.645025724916203,
-        "y": 4.020212861828027
+        "x": 0.41588589697565537,
+        "y": 5.693098520740701
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.6,
-        "y": 4.0
+        "x": 0.471,
+        "y": 5.675
       },
       "prevControl": {
-        "x": 2.282726373735437,
-        "y": 3.998178772086929
+        "x": 0.7204882876975683,
+        "y": 5.659012683097679
+      },
+      "nextControl": {
+        "x": 0.22151171230243138,
+        "y": 5.690987316902321
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.15,
+        "y": 5.675
+      },
+      "prevControl": {
+        "x": 0.9013417820196696,
+        "y": 5.700866786248905
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +49,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.25,
+    "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -45,10 +61,10 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Middle Auto Folder",
+  "folder": "Depot Auto Folder",
   "idealStartingState": {
-    "velocity": 0.0,
+    "velocity": 0,
     "rotation": 180.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

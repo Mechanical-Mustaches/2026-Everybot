@@ -4,24 +4,24 @@
     {
       "anchor": {
         "x": 3.55,
-        "y": 6.0
+        "y": 4.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.537342361239683,
-        "y": 6.02249092659736
+        "x": 2.645025724916203,
+        "y": 4.020212861828027
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.15,
-        "y": 5.675
+        "x": 2.0,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 2.4141936967286393,
-        "y": 5.647013187392844
+        "x": 2.682726373735437,
+        "y": 3.998178772086929
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 1.25,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -45,10 +45,10 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Depot Auto Folder",
+  "folder": "Middle Auto Folder",
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": 180.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

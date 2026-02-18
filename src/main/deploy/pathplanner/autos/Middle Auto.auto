@@ -45,6 +45,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Limited Paths Folder",
   "choreoAuto": false
 }
