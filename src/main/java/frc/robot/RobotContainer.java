@@ -65,7 +65,7 @@ public class RobotContainer {
 
     // NamedCommands.registerCommand("AlignClimb", );
     NamedCommands.registerCommand("Shoot", new ShootCommand(intakeSubsystem, hopperSubsystem));
-    NamedCommands.registerCommand("Climb", new ClimberCommand(climberSubsystem));
+    NamedCommands.registerCommand("Climb", new ClimberCommand(climberSubsystem, Stage.S1));
     NamedCommands.registerCommand("AlignScore", new MoveToScoreCommand(swerveDriveSubsystem));
     NamedCommands.registerCommand("AlignClimb", new MoveToScoreCommand(swerveDriveSubsystem));
 
