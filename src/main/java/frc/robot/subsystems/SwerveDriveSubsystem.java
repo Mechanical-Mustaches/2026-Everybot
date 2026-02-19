@@ -25,6 +25,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -117,16 +118,20 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         this.m_field = new Field2d();
 
         SmartDashboard.putData("swerveField", m_field);
-        var modules = swerveDrive.getModules();
-        swerveDriveKinematics = new SwerveDriveKinematics(modules[0].getConfiguration().moduleLocation,
-                modules[1].getConfiguration().moduleLocation, modules[2].getConfiguration().moduleLocation,
-                modules[3].getConfiguration().moduleLocation);
+        // var modules = swerveDrive.getModules();
+        // swerveDriveKinematics = new
+        // SwerveDriveKinematics(modules[0].getConfiguration().moduleLocation,
+        // modules[1].getConfiguration().moduleLocation,
+        // modules[2].getConfiguration().moduleLocation,
+        // modules[3].getConfiguration().moduleLocation);
 
-        swerveDriveOdometry = new SwerveDriveOdometry(swerveDriveKinematics, getYaw(),
-                swerveDrive.getModulePositions());
+        // swerveDriveOdometry = new SwerveDriveOdometry(swerveDriveKinematics,
+        // getYaw(),
+        // swerveDrive.getModulePositions());
 
-        poseEstimator = new SwerveDrivePoseEstimator(swerveDriveKinematics, getYaw(), swerveDrive.getModulePositions(),
-                getPose());
+        // poseEstimator = new SwerveDrivePoseEstimator(swerveDriveKinematics, getYaw(),
+        // swerveDrive.getModulePositions(),
+        // getPose());
     }
 
     public Point getNearestScoringPoint() {
@@ -163,9 +168,9 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         return swerveDrive.getPose();
     }
 
-    public Pose2d getOtherPose() {
-        return poseEstimator.getEstimatedPosition();
-    }
+    // public Pose2d getOtherPose() {
+    // return poseEstimator.getEstimatedPosition();
+    // }
 
     public void resetGyro() {
         swerveDrive.setGyro(new Rotation3d(0, 0, 0));
@@ -243,6 +248,11 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // First, tell Limelight your robot's current orientation
+
+        SmartDashboard.putNumber("swerveMaxAngularVelocity", swerveDrive.getMaximumChassisAngularVelocity());
+        SmartDashboard.putNumber("swerveAngularVelocity",
+                swerveDrive.getRobotVelocity().omegaRadiansPerSecond * Units.inchesToMeters(16.05));
+
         double robotYaw = swerveDrive.getGyro().getRotation3d().getY();
 
         LimelightHelpers.SetRobotOrientation("limelight-front", robotYaw, 0.0, 0.0, 0.0, 0.0, 0.0);
@@ -282,11 +292,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             }
         }
 
-        m_field.setRobotPose(getOtherPose());
-
         swerveDrive.updateOdometry();
+        m_field.setRobotPose(getPose());
 
-        poseEstimator.update(getYaw(), swerveDrive.getModulePositions());
+        // poseEstimator.update(getYaw(), swerveDrive.getModulePositions());
 
     }
 }
