@@ -43,22 +43,22 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     private final SwerveDrive swerveDrive;
     private final Field2d m_field;
 
-    SwerveDrivePoseEstimator poseEstimator;
-    private SwerveDriveOdometry swerveDriveOdometry;
-    private SwerveDriveKinematics swerveDriveKinematics;
-
     private static Point kRedHubPoint = new Point(4.034663, 4.625594);
     private static Point kBlueHubPoint = new Point(4.034663, 4.625594);
     private static double kScoringRadius = 2;
-    private static double kPositionTolerance = 0.01;
 
     public static Point getHubPoint() {
+
+        if (DriverStation.getAlliance().get() == null) {
+            return kBlueHubPoint;
+        }
 
         if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
             return kBlueHubPoint;
         } else {
             return kRedHubPoint;
         }
+
     }
 
     public SwerveDriveSubsystem() {
@@ -118,20 +118,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         this.m_field = new Field2d();
 
         SmartDashboard.putData("swerveField", m_field);
-        // var modules = swerveDrive.getModules();
-        // swerveDriveKinematics = new
-        // SwerveDriveKinematics(modules[0].getConfiguration().moduleLocation,
-        // modules[1].getConfiguration().moduleLocation,
-        // modules[2].getConfiguration().moduleLocation,
-        // modules[3].getConfiguration().moduleLocation);
-
-        // swerveDriveOdometry = new SwerveDriveOdometry(swerveDriveKinematics,
-        // getYaw(),
-        // swerveDrive.getModulePositions());
-
-        // poseEstimator = new SwerveDrivePoseEstimator(swerveDriveKinematics, getYaw(),
-        // swerveDrive.getModulePositions(),
-        // getPose());
     }
 
     public Point getNearestScoringPoint() {
@@ -167,10 +153,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     public Pose2d getPose() {
         return swerveDrive.getPose();
     }
-
-    // public Pose2d getOtherPose() {
-    // return poseEstimator.getEstimatedPosition();
-    // }
 
     public void resetGyro() {
         swerveDrive.setGyro(new Rotation3d(0, 0, 0));
@@ -231,7 +213,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             var x = translationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity();
             var y = translationY.getAsDouble() * swerveDrive.getMaximumChassisVelocity();
             var translation = new Translation2d(x, y);
-            var rotation = angularRotationX.getAsDouble() * swerveDrive.getMaximumChassisAngularVelocity();
+            var rotation = angularRotationX.getAsDouble() * 0.25 * swerveDrive.getMaximumChassisAngularVelocity();
 
             swerveDrive.drive(translation, rotation, true, false);
 
@@ -294,8 +276,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         swerveDrive.updateOdometry();
         m_field.setRobotPose(getPose());
-
-        // poseEstimator.update(getYaw(), swerveDrive.getModulePositions());
 
     }
 }
