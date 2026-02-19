@@ -102,14 +102,10 @@ public class RobotContainer {
     m_gunnerController.button(1).whileTrue(new IntakeCommand(intakeSubsystem, hopperSubsystem));
     m_gunnerController.button(3).whileTrue(new FeedCommand(intakeSubsystem));
 
-    // m_gunnerController.button(2).whileTrue(new ClimberCommand(climberSubsystem));
-
-    m_gunnerController.button(2).whileTrue(new ClimberCommand(climberSubsystem, Stage.S1));
-    m_gunnerController.button(2).onFalse(new InstantCommand(() -> climberSubsystem.stop()));
+    m_gunnerController.button(2).whileTrue(new ClimberCommand(climberSubsystem, Stage.S4));
     m_gunnerController.button(3).whileTrue(new ClimberCommand(climberSubsystem, Stage.S2));
-    m_gunnerController.button(3).onFalse(new InstantCommand(() -> climberSubsystem.stop()));
-    m_gunnerController.button(5).whileTrue(new ClimberCommand(climberSubsystem, Stage.S0));
-    m_gunnerController.button(5).onFalse(new InstantCommand(() -> climberSubsystem.stop()));
+    m_gunnerController.button(5).whileTrue(new ClimberCommand(climberSubsystem, Stage.S3));
+    m_gunnerController.button(6).whileTrue(new ClimberCommand(climberSubsystem, Stage.S1));
 
     m_gunnerController.button(11).onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
     m_gunnerController.button(11).onFalse(new InstantCommand(() -> climberSubsystem.stop()));

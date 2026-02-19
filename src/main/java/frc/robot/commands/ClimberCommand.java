@@ -1,13 +1,11 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ClimberSubsystem.Stage;
 
 public class ClimberCommand extends Command {
 
-    // TODO imploment/ create command for buttons
     private final ClimberSubsystem climber;
     private final Stage stage;
 
@@ -18,16 +16,10 @@ public class ClimberCommand extends Command {
 
     @Override
     public void initialize() {
-    }
-
-    @Override
-    public void execute() {
-        double curPos = climber.getEncoderPosition();
-        double target = stage.encoderValue;
-        if (curPos < target) {
-            climber.dumbClimb();
-        } else if (curPos > target) {
-            climber.dumbUnClimb();
+        if (stage == Stage.S1 || stage == Stage.S2 ){
+            climber.reverseClimb();
+        } else {
+            climber.climb();
         }
     }
 
