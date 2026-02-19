@@ -13,11 +13,11 @@ public class HopperSubsystem extends SubsystemBase {
     }
 
     public void conveyorIn() {
-        conveyorMotor.set(1);
+        conveyorMotor.set(-1);
     }
 
     public void conveyorOut() {
-        conveyorMotor.set(-1);
+        conveyorMotor.set(1);
     }
 
     public void conveyorStop() {
