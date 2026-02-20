@@ -117,6 +117,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         swerveDrive.setHeadingCorrection(false);
 
         SmartDashboard.putData("swerveField", m_field);
+
     }
 
     public Point getNearestScoringPoint() {
@@ -232,7 +233,9 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("swerveMaxAngularVelocity", swerveDrive.getMaximumChassisAngularVelocity());
         SmartDashboard.putNumber("swerveAngularVelocity",
-                swerveDrive.getRobotVelocity().omegaRadiansPerSecond * Units.inchesToMeters(16.05));
+                swerveDrive.getRobotVelocity().omegaRadiansPerSecond
+                        * swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters());
+        SmartDashboard.putNumber("swerveRadius", swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters());
 
         double robotYaw = swerveDrive.getGyro().getRotation3d().getY();
 
