@@ -49,15 +49,12 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     public static Point getHubPoint() {
 
-        if (DriverStation.getAlliance().get() == null) {
-            return kBlueHubPoint;
-        }
-
-        if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
-            return kBlueHubPoint;
-        } else {
-            return kRedHubPoint;
-        }
+        // if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+        // return kBlueHubPoint;
+        // } else {
+        // return kRedHubPoint;
+        // }
+        return kBlueHubPoint;
 
     }
 
@@ -116,6 +113,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         swerveDrive.setMotorIdleMode(true);
 
         this.m_field = new Field2d();
+
+        swerveDrive.setHeadingCorrection(false);
 
         SmartDashboard.putData("swerveField", m_field);
     }
@@ -249,32 +248,37 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         // Add it to your pose estimator
         swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
 
-        if (frontLimelightMeasurement != null) {
-            if (backLimelightMeasurement.pose.getX() >= 0 || backLimelightMeasurement.pose.getY() >= 0) {
-                swerveDrive.addVisionMeasurement(
-                        frontLimelightMeasurement.pose,
-                        frontLimelightMeasurement.timestampSeconds);
-                double[] frontLimelightEstimatedPose = { frontLimelightMeasurement.pose.getX(),
-                        frontLimelightMeasurement.pose.getY() };
-                SmartDashboard.putNumberArray("frontLimelightEstimatedPose", frontLimelightEstimatedPose);
-                SmartDashboard.putNumber("frontLimelightAveragedist",
-                        LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-front").avgTagDist);
-            }
-        }
-        if (backLimelightMeasurement != null) {
-            if (backLimelightMeasurement.pose.getX() >= 0 || backLimelightMeasurement.pose.getY() >= 0) {
-                swerveDrive.addVisionMeasurement(
-                        backLimelightMeasurement.pose,
-                        backLimelightMeasurement.timestampSeconds);
-                double[] backLimelightEstimatedPose = { backLimelightMeasurement.pose.getX(),
-                        backLimelightMeasurement.pose.getY() };
-                SmartDashboard.putNumberArray("backLimelightEstimatedPose", backLimelightEstimatedPose);
-                SmartDashboard.putNumber("backLimelightAveragedist",
-                        LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-back").avgTagDist);
-            }
-        }
+        // if (frontLimelightMeasurement != null) {
+        // if (backLimelightMeasurement.pose.getX() >= 0 ||
+        // backLimelightMeasurement.pose.getY() >= 0) {
+        // swerveDrive.addVisionMeasurement(
+        // frontLimelightMeasurement.pose,
+        // frontLimelightMeasurement.timestampSeconds);
+        // double[] frontLimelightEstimatedPose = {
+        // frontLimelightMeasurement.pose.getX(),
+        // frontLimelightMeasurement.pose.getY() };
+        // SmartDashboard.putNumberArray("frontLimelightEstimatedPose",
+        // frontLimelightEstimatedPose);
+        // SmartDashboard.putNumber("frontLimelightAveragedist",
+        // LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-front").avgTagDist);
+        // }
+        // }
+        // if (backLimelightMeasurement != null) {
+        // if (backLimelightMeasurement.pose.getX() >= 0 ||
+        // backLimelightMeasurement.pose.getY() >= 0) {
+        // swerveDrive.addVisionMeasurement(
+        // backLimelightMeasurement.pose,
+        // backLimelightMeasurement.timestampSeconds);
+        // double[] backLimelightEstimatedPose = { backLimelightMeasurement.pose.getX(),
+        // backLimelightMeasurement.pose.getY() };
+        // SmartDashboard.putNumberArray("backLimelightEstimatedPose",
+        // backLimelightEstimatedPose);
+        // SmartDashboard.putNumber("backLimelightAveragedist",
+        // LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-back").avgTagDist);
+        // }
+        // }
 
-        swerveDrive.updateOdometry();
+        // swerveDrive.updateOdometry();
         m_field.setRobotPose(getPose());
 
     }
