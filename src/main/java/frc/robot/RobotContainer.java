@@ -8,6 +8,9 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -95,12 +98,16 @@ public class RobotContainer {
         () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(0), 0.1),
         () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0.1)));
 
+    if (DriverStation.isTest()) {
+      m_driverController.povRight()
+          .onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetPose(new Pose2d(5, 5, new Rotation2d()))));
+    }
     m_driverController.leftBumper().whileTrue(new MoveToScoreCommand(swerveDriveSubsystem));
     m_driverController.rightBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
 
     m_gunnerController.button(4).whileTrue(new ShootCommand(intakeSubsystem, hopperSubsystem));
     m_gunnerController.button(1).whileTrue(new IntakeCommand(intakeSubsystem, hopperSubsystem));
- //   m_gunnerController.button(3).whileTrue(new FeedCommand(intakeSubsystem));
+    // m_gunnerController.button(3).whileTrue(new FeedCommand(intakeSubsystem));
 
     m_gunnerController.button(2).whileTrue(new ClimberCommand(climberSubsystem, Stage.S4));
     m_gunnerController.button(3).whileTrue(new ClimberCommand(climberSubsystem, Stage.S2));

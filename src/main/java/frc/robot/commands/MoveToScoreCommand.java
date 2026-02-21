@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
 public class MoveToScoreCommand extends Command {
@@ -21,14 +22,14 @@ public class MoveToScoreCommand extends Command {
                 swerve.getMaximumChassisVelocity(), 4.0,
                 swerve.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
 
-        targetPose = new Pose2d(swerve.getNearestScoringPoint().x, swerve.getNearestScoringPoint().y,
-                new Rotation2d(swerve.getRotationToPoint(SwerveDriveSubsystem.getHubPoint())));
-
     }
 
     @Override
     public void initialize() {
-        AutoBuilder.pathfindToPose(targetPose, constraints);
+        targetPose = new Pose2d(swerve.getNearestScoringPoint().x, swerve.getNearestScoringPoint().y,
+                new Rotation2d(swerve.getRotationToPoint(SwerveDriveSubsystem.getHubPoint())));
+        CommandScheduler.getInstance().schedule(AutoBuilder.pathfindToPose(targetPose, constraints));
+
     }
 
 }

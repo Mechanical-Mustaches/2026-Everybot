@@ -121,13 +121,12 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     }
 
     public Point getNearestScoringPoint() {
-        Point robotPoint = new Point(getPose().getX(), getPose().getY());
-        double slope = ((robotPoint.y - getHubPoint().y) / (robotPoint.x - getHubPoint().x));
 
-        double horizontalDistance = kScoringRadius / Math.sqrt((slope * slope) + 1);
-        double verticalDistance = Math.sqrt((slope * slope) / (horizontalDistance * horizontalDistance));
+        var robotRotation = getRotationToPoint(getHubPoint());
+        var y = kScoringRadius * Math.cos(robotRotation);
+        var x = kScoringRadius * Math.sin(robotRotation);
 
-        Point scoringPoint = new Point(getHubPoint().x - horizontalDistance, getHubPoint().y - verticalDistance);
+        Point scoringPoint = new Point(getHubPoint().x + x, getHubPoint().y + y);
 
         return scoringPoint;
 
@@ -147,7 +146,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     }
 
     public double getRotationToPoint(Point point) {
-        return Math.atan((point.y - getPose().getY()) / (point.x - getPose().getX()));
+        return Math.atan2((getPose().getY() - point.y), (getPose().getX() - point.x));
     }
 
     public Pose2d getPose() {
@@ -213,7 +212,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             var x = translationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity();
             var y = translationY.getAsDouble() * swerveDrive.getMaximumChassisVelocity();
             var translation = new Translation2d(x, y);
-            var rotation = angularRotationX.getAsDouble() * 0.25 * swerveDrive.getMaximumChassisAngularVelocity();
+            var rotation = Math.pow(angularRotationX.getAsDouble(), 3) * 0.5;
 
             swerveDrive.drive(translation, rotation, true, false);
 
