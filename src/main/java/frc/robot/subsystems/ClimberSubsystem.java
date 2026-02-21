@@ -14,7 +14,7 @@ public class ClimberSubsystem extends SubsystemBase {
     private SparkMax mainClimber = new SparkMax(9, MotorType.kBrushed);
     private SparkMaxConfig mainClimberConfig = new SparkMaxConfig();
 
-    int revolutions = 0;
+    int revolutions = 1;
     double previousPose = 0;
 
     /**
@@ -29,10 +29,10 @@ public class ClimberSubsystem extends SubsystemBase {
      * - S4 -> L2 Climb position
      */
     public enum Stage {
-        S1(0.775), 
-        S2(0.966), //1 revolution
-        S3(.150), 
-        S4(.424); //???
+        S1(0.5), //previously 0.775
+        S2(0.886), //1 revolution
+        S3(.5), //previously 0.150
+        S4(.424); //previously 0.424
 
         public final double encoderValue;
 
@@ -41,6 +41,8 @@ public class ClimberSubsystem extends SubsystemBase {
         }
 
     }
+
+        Stage stage = Stage.S1;
 
     public ClimberSubsystem() {
 
@@ -72,12 +74,15 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public boolean isDone(Stage stage) {
-        if ((stage == Stage.S1 && revolutions == 0) || (stage != Stage.S1 && revolutions == 1)){
+        this.stage = stage;
+        if (stage == Stage.S2 && revolutions == 0){ 
+            return true;
+        } else if ((stage == Stage.S1 && revolutions == 0) || (stage != Stage.S1 && revolutions == 1)){
             if (Math.abs(mainClimber.getAbsoluteEncoder().getPosition() - stage.encoderValue) <= 0.005) {
                 return true;
             } else {
                 return false;
-        }
+            }
         } else {
             return false;
         }    
@@ -86,7 +91,8 @@ public class ClimberSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("climberAbsoluteEncoder", mainClimber.getAbsoluteEncoder().getPosition());
-        
+        SmartDashboard.putNumber("climberDistanceToTarget", Math.abs(mainClimber.getAbsoluteEncoder().getPosition() - stage.encoderValue));
+
         double currentPose = mainClimber.getAbsoluteEncoder().getPosition();
         if (currentPose < 0.1 && previousPose > 0.9){
             revolutions -= 1;

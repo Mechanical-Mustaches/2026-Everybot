@@ -16,10 +16,12 @@ public class ClimberCommand extends Command {
 
     @Override
     public void initialize() {
-        if (stage == Stage.S1 || stage == Stage.S2 ){
-            climber.reverseClimb();
-        } else {
-            climber.climb();
+        if (!climber.isDone(stage)){
+            if (stage == Stage.S1 || stage == Stage.S2 ){
+                climber.reverseClimb();
+            } else {
+                climber.climb();
+            }
         }
     }
 
