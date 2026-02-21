@@ -32,7 +32,7 @@ public class ClimberSubsystem extends SubsystemBase {
         S1(0.775), 
         S2(0.966), //1 revolution
         S3(.150), 
-        S4(.424);
+        S4(.424); //???
 
         public final double encoderValue;
 
@@ -73,7 +73,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public boolean isDone(Stage stage) {
         if ((stage == Stage.S1 && revolutions == 0) || (stage != Stage.S1 && revolutions == 1)){
-            if (mainClimber.getAbsoluteEncoder().getPosition() >= stage.encoderValue) {
+            if (Math.abs(mainClimber.getAbsoluteEncoder().getPosition() - stage.encoderValue) <= 0.005) {
                 return true;
             } else {
                 return false;

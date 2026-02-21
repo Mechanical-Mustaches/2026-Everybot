@@ -100,7 +100,7 @@ public class RobotContainer {
 
     m_gunnerController.button(4).whileTrue(new ShootCommand(intakeSubsystem, hopperSubsystem));
     m_gunnerController.button(1).whileTrue(new IntakeCommand(intakeSubsystem, hopperSubsystem));
-    m_gunnerController.button(3).whileTrue(new FeedCommand(intakeSubsystem));
+ //   m_gunnerController.button(3).whileTrue(new FeedCommand(intakeSubsystem));
 
     m_gunnerController.button(2).whileTrue(new ClimberCommand(climberSubsystem, Stage.S4));
     m_gunnerController.button(3).whileTrue(new ClimberCommand(climberSubsystem, Stage.S2));
