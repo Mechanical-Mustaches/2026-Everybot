@@ -233,8 +233,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("swerveMaxAngularVelocity", swerveDrive.getMaximumChassisAngularVelocity());
         SmartDashboard.putNumber("swerveAngularVelocity",
-                swerveDrive.getRobotVelocity().omegaRadiansPerSecond
-                        * swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters());
+                swerveDrive.getRobotVelocity().omegaRadiansPerSecond);
         SmartDashboard.putNumber("swerveRadius", swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters());
 
         double robotYaw = swerveDrive.getGyro().getRotation3d().getY();
