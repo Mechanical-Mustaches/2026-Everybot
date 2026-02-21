@@ -24,6 +24,7 @@ import frc.robot.commands.FeedCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.MoveToScoreCommand;
 import frc.robot.commands.ShootCommand;
+import frc.robot.commands.SpinUpToShootCommandGroup;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -113,6 +114,8 @@ public class RobotContainer {
     m_gunnerController.button(3).whileTrue(new ClimberCommand(climberSubsystem, Stage.S2));
     m_gunnerController.button(5).whileTrue(new ClimberCommand(climberSubsystem, Stage.S3));
     m_gunnerController.button(6).whileTrue(new ClimberCommand(climberSubsystem, Stage.S1));
+
+    m_gunnerController.button(8).whileTrue(new SpinUpToShootCommandGroup(intakeSubsystem, hopperSubsystem));
 
     m_gunnerController.button(11).onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
     m_gunnerController.button(11).onFalse(new InstantCommand(() -> climberSubsystem.stop()));
