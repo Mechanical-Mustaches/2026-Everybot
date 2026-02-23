@@ -16,6 +16,8 @@ public class ClimberSubsystem extends SubsystemBase {
 
     int revolutions = 1;
     double previousPose = 0;
+    double mainStageTolerance = 0.01;
+    double stage4Tolerance = 0.005;
 
     /**
      * Depicts the stage the climber should travel to
@@ -29,10 +31,10 @@ public class ClimberSubsystem extends SubsystemBase {
      * - S4 -> L2 Climb position
      */
     public enum Stage {
-        S1(0.5), //previously 0.775
-        S2(0.886), //1 revolution
-        S3(.5), //previously 0.150
-        S4(.424); //previously 0.424
+        S1(0.775),
+        S2(0.886), // 1 revolution
+        S3(.45), // previously 0.150
+        S4(.2); // 2 revolutions
 
         public final double encoderValue;
 
@@ -42,7 +44,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
     }
 
-        Stage stage = Stage.S1;
+    Stage stage = Stage.S1;
 
     public ClimberSubsystem() {
 
@@ -54,19 +56,23 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void reverseClimb() {
-       mainClimber.set(-0.25);
+        mainClimber.set(-0.75);
     }
 
     public void climb() {
-        mainClimber.set(0.25);
+        if (revolutions == 2 && Stage.S4.encoderValue - mainClimber.getAbsoluteEncoder().getPosition() <= 0.1) {
+            mainClimber.set(0.4);
+        } else {
+            mainClimber.set(0.75);
+        }
     }
 
     public void dumbClimb() {
-        mainClimber.set(.4);
+        mainClimber.set(.3);
     }
 
     public void dumbUnClimb() {
-        mainClimber.set(-.4);
+        mainClimber.set(-.3);
     }
 
     public void stop() {
@@ -75,35 +81,42 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public boolean isDone(Stage stage) {
         this.stage = stage;
-        if (stage == Stage.S2 && revolutions == 0){ 
+        if (stage == Stage.S2 && revolutions == 0) {
             return true;
-        } else if ((stage == Stage.S1 && revolutions == 0) || (stage != Stage.S1 && revolutions == 1)){
-            if (Math.abs(mainClimber.getAbsoluteEncoder().getPosition() - stage.encoderValue) <= 0.005) {
+        } else if ((stage == Stage.S1 && revolutions == 0) || (stage != Stage.S1 && revolutions == 1)) {
+            if (stage != Stage.S4
+                    && Math.abs(
+                            mainClimber.getAbsoluteEncoder().getPosition() - stage.encoderValue) <= mainStageTolerance
+                    ||
+                    stage == Stage.S4 && Math.abs(
+                            mainClimber.getAbsoluteEncoder().getPosition() - stage.encoderValue) <= stage4Tolerance) {
                 return true;
             } else {
                 return false;
             }
         } else {
             return false;
-        }    
+        }
     }
 
     @Override
     public void periodic() {
         SmartDashboard.putNumber("climberAbsoluteEncoder", mainClimber.getAbsoluteEncoder().getPosition());
-        SmartDashboard.putNumber("climberDistanceToTarget", Math.abs(mainClimber.getAbsoluteEncoder().getPosition() - stage.encoderValue));
+        SmartDashboard.putNumber("climberDistanceToTarget",
+                Math.abs(mainClimber.getAbsoluteEncoder().getPosition() - stage.encoderValue));
+        SmartDashboard.putBoolean("climberIsFinished", isDone(stage));
 
         double currentPose = mainClimber.getAbsoluteEncoder().getPosition();
-        if (currentPose < 0.1 && previousPose > 0.9){
+        if (currentPose < 0.05 && previousPose > 0.95) {
             revolutions -= 1;
-        } else if (currentPose > 0.9 && previousPose < 0.1){
+        } else if (currentPose > 0.95 && previousPose < 0.05) {
             revolutions += 1;
         }
         SmartDashboard.putNumber("revolutions", revolutions);
         previousPose = currentPose;
     }
 
-    public double getEncoderPosition(){
+    public double getEncoderPosition() {
         return mainClimber.getEncoder().getPosition();
     }
 }
