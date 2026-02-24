@@ -15,4 +15,9 @@ public class SpinUpCommand extends Command {
     public void initialize() {
         intakeSubsystem.shoot();
     }
+
+    @Override
+    public void end(boolean interrupted) {
+        intakeSubsystem.stopShooter();
+    }
 }

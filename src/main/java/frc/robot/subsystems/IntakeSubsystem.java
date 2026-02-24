@@ -25,7 +25,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void shoot() {
-        mainMotor.set(-.1);
+        mainMotor.set(-1);
     }
 
     public void intake() {
@@ -37,7 +37,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void indexOut() {
-        indexMotor.set(.1);
+        indexMotor.set(1);
     }
 
     public void stopShooter() {
