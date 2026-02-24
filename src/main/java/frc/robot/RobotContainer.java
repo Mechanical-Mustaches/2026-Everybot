@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -25,6 +27,7 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.MoveToScoreCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.SpinUpToShootCommandGroup;
+import frc.robot.commands.StopCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -115,7 +118,10 @@ public class RobotContainer {
     m_gunnerController.button(5).whileTrue(new ClimberCommand(climberSubsystem, Stage.S3));
     m_gunnerController.button(6).whileTrue(new ClimberCommand(climberSubsystem, Stage.S1));
 
-    m_gunnerController.button(8).whileTrue(new SpinUpToShootCommandGroup(intakeSubsystem, hopperSubsystem));
+    m_gunnerController.button(8).onTrue(new SpinUpToShootCommandGroup(intakeSubsystem, hopperSubsystem)
+        .until(() -> !m_gunnerController.button(8).getAsBoolean()));
+    m_gunnerController.button(8)
+        .onFalse(new StopCommand(intakeSubsystem, hopperSubsystem));
 
     m_gunnerController.button(11).onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
     m_gunnerController.button(11).onFalse(new InstantCommand(() -> climberSubsystem.stop()));
