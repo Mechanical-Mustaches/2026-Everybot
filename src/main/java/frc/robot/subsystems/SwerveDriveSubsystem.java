@@ -239,7 +239,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
                 rotation = getRotationToPoint(getHubPoint()) / Math.PI * swerveDrive.getMaximumChassisAngularVelocity();
             }
 
-            swerveDrive.drive(translation, rotation, true, false);
+            // swerveDrive.drive(translation, rotation, true, false);
+            swerveDrive.driveFieldOriented(new ChassisSpeeds(x, y, rotation));
 
             SmartDashboard.putNumber("MaxChassisAngularVelocity", swerveDrive.getMaximumChassisAngularVelocity());
             SmartDashboard.putNumber("MaxChassisVelocity", swerveDrive.getMaximumChassisVelocity());
