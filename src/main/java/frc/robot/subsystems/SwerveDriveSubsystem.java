@@ -46,8 +46,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     private static Point kRedHubPoint = new Point(4.034663, 4.625594);
     private static Point kBlueHubPoint = new Point(4.034663, 4.625594);
-    private static double kScoringRadius = Units.inchesToMeters(63);
-    private static double kPositionTolerance = 1;
+    private static double kScoringRadius = Units.inchesToMeters(60 - 16.5);
+    private static double kPositionTolerance = Units.inchesToMeters(3);
 
     public static Point getHubPoint() {
 
@@ -141,6 +141,13 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         return dist;
     }
 
+    public boolean isInRange() {
+        if (distanceToPoint(getNearestScoringPoint()) <= kPositionTolerance) {
+            return true;
+        } else
+            return false;
+    }
+
     public void moveToPoint(Point targetPoint, boolean rotateToPoint) {
         swerveDrive.drive(new ChassisSpeeds(
                 swerveDrive.getMaximumChassisVelocity() * 0.65 * Math.sin(getRotationToPoint(targetPoint)),
@@ -232,6 +239,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // First, tell Limelight your robot's current orientation
+
+        SmartDashboard.putBoolean("isInRange", isInRange());
 
         SmartDashboard.putNumber("swerveMaxAngularVelocity", swerveDrive.getMaximumChassisAngularVelocity());
         SmartDashboard.putNumber("swerveAngularVelocity",
