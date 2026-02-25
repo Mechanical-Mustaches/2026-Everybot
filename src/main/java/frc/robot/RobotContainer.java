@@ -15,14 +15,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ClimberCommand;
-import frc.robot.commands.FeedCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.MoveToScoreCommand;
 import frc.robot.commands.ShootCommand;
@@ -55,6 +52,9 @@ public class RobotContainer {
   private final CommandXboxController m_driverController = new CommandXboxController(
       OperatorConstants.kDriverControllerPort);
 
+  private final CommandXboxController m_pitController = new CommandXboxController(
+      OperatorConstants.kDriverControllerPort);
+
   private final CommandGenericHID m_gunnerController = new CommandGenericHID(OperatorConstants.kGunnerControllerPort);
   // private final XboxController driverController_HID =
   // m_driverController.getHID();
@@ -70,7 +70,6 @@ public class RobotContainer {
     hopperSubsystem = new HopperSubsystem();
     // Configure the trigger bindings
 
-    // NamedCommands.registerCommand("AlignClimb", );
     NamedCommands.registerCommand("Shoot", new ShootCommand(intakeSubsystem, hopperSubsystem));
     NamedCommands.registerCommand("Climb", new ClimberCommand(climberSubsystem, Stage.S1));
     NamedCommands.registerCommand("AlignScore", new MoveToScoreCommand(swerveDriveSubsystem));
@@ -109,24 +108,28 @@ public class RobotContainer {
     m_driverController.leftBumper().whileTrue(new MoveToScoreCommand(swerveDriveSubsystem));
     m_driverController.rightBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
 
-    m_gunnerController.button(4).whileTrue(new ShootCommand(intakeSubsystem, hopperSubsystem));
     m_gunnerController.button(1).whileTrue(new IntakeCommand(intakeSubsystem, hopperSubsystem));
-    // m_gunnerController.button(3).whileTrue(new FeedCommand(intakeSubsystem));
+    m_gunnerController.button(4).onTrue(new SpinUpToShootCommandGroup(intakeSubsystem, hopperSubsystem)
+        .until(() -> !m_gunnerController.button(4).getAsBoolean()));
+    m_gunnerController.button(4)
+        .onFalse(new StopCommand(intakeSubsystem, hopperSubsystem));
 
     m_gunnerController.button(2).whileTrue(new ClimberCommand(climberSubsystem, Stage.S4));
     m_gunnerController.button(3).whileTrue(new ClimberCommand(climberSubsystem, Stage.S2));
     m_gunnerController.button(5).whileTrue(new ClimberCommand(climberSubsystem, Stage.S3));
     m_gunnerController.button(6).whileTrue(new ClimberCommand(climberSubsystem, Stage.S1));
 
-    m_gunnerController.button(8).onTrue(new SpinUpToShootCommandGroup(intakeSubsystem, hopperSubsystem)
-        .until(() -> !m_gunnerController.button(8).getAsBoolean()));
-    m_gunnerController.button(8)
-        .onFalse(new StopCommand(intakeSubsystem, hopperSubsystem));
+    m_gunnerController.button(9).onTrue(new InstantCommand(() -> hopperSubsystem.conveyorIn()));
+    m_gunnerController.button(9).onFalse(new InstantCommand(() -> hopperSubsystem.conveyorStop()));
+    m_gunnerController.button(12).onTrue(new InstantCommand(() -> hopperSubsystem.conveyorOut()));
+    m_gunnerController.button(12).onFalse(new InstantCommand(() -> hopperSubsystem.conveyorStop()));
 
-    m_gunnerController.button(11).onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
-    m_gunnerController.button(11).onFalse(new InstantCommand(() -> climberSubsystem.stop()));
-    m_gunnerController.button(12).onTrue(new InstantCommand(() -> climberSubsystem.dumbUnClimb()));
-    m_gunnerController.button(12).onFalse(new InstantCommand(() -> climberSubsystem.stop()));
+    m_gunnerController.button(10).whileTrue(new InstantCommand(() -> intakeSubsystem.reverseIntake()));
+
+    m_pitController.povUp().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
+    m_pitController.povUp().onFalse(new InstantCommand(() -> climberSubsystem.stop()));
+    m_pitController.povDown().onTrue(new InstantCommand(() -> climberSubsystem.dumbUnClimb()));
+    m_pitController.povDown().onFalse(new InstantCommand(() -> climberSubsystem.stop()));
   }
 
   /**

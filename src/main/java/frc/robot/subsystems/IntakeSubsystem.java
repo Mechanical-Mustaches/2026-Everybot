@@ -44,6 +44,10 @@ public class IntakeSubsystem extends SubsystemBase {
         mainMotor.set(0);
     }
 
+    public void reverseIntake() {
+        mainMotor.set(1);
+    }
+
     public void stopIndex() {
         indexMotor.set(0);
     }
