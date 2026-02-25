@@ -3,9 +3,9 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
+    "Depot Auto Folder",
     "Middle Auto Folder",
-    "New Folder",
-    "Depot Auto Folder"
+    "Outpost Auto Folder"
   ],
   "autoFolders": [
     "Limited Paths Folder",
