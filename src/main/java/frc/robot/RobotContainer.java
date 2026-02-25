@@ -107,7 +107,8 @@ public class RobotContainer {
       m_driverController.povRight()
           .onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetPose(new Pose2d(5, 5, new Rotation2d()))));
     }
-    m_driverController.leftBumper().whileTrue(new MoveToScoreCommand(swerveDriveSubsystem));
+    // m_driverController.leftBumper().whileTrue(new
+    // MoveToScoreCommand(swerveDriveSubsystem));
     m_driverController.rightBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
 
     m_gunnerController.button(1).whileTrue(new IntakeCommand(intakeSubsystem, hopperSubsystem));
