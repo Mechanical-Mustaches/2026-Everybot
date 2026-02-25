@@ -56,6 +56,7 @@ public class RobotContainer {
       OperatorConstants.kDriverControllerPort);
 
   private final CommandGenericHID m_gunnerController = new CommandGenericHID(OperatorConstants.kGunnerControllerPort);
+
   // private final XboxController driverController_HID =
   // m_driverController.getHID();
 
@@ -99,7 +100,8 @@ public class RobotContainer {
     swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
         () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(1), 0.1),
         () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(0), 0.1),
-        () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0.1)));
+        () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0.1),
+        m_driverController.leftBumper().getAsBoolean()));
 
     if (DriverStation.isTest()) {
       m_driverController.povRight()

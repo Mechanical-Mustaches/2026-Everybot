@@ -216,13 +216,20 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      * @return Drive command.
      */
     public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY,
-            DoubleSupplier angularRotationX) {
+            DoubleSupplier angularRotationX, boolean rotateToPoint) {
         return run(() -> {
             var x = translationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity();
             var y = translationY.getAsDouble() * swerveDrive.getMaximumChassisVelocity();
+
             var translation = new Translation2d(x, y);
-            var rotation = Math.pow(angularRotationX.getAsDouble(), 3)
-                    * swerveDrive.getMaximumChassisAngularVelocity();
+            double rotation;
+
+            if (rotateToPoint != true) {
+                rotation = Math.pow(angularRotationX.getAsDouble(), 3)
+                        * swerveDrive.getMaximumChassisAngularVelocity();
+            } else {
+                rotation = getRotationToPoint(getHubPoint()) / Math.PI * swerveDrive.getMaximumChassisAngularVelocity();
+            }
 
             swerveDrive.drive(translation, rotation, true, false);
 

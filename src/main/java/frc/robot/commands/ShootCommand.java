@@ -18,7 +18,6 @@ public class ShootCommand extends Command {
     public void initialize() {
         intake.indexOut();
         intake.shoot();
-        hopper.conveyorOut();
 
     }
 
@@ -26,7 +25,7 @@ public class ShootCommand extends Command {
     public void end(boolean interrupted) {
         intake.stopIndex();
         intake.stopShooter();
-        hopper.conveyorStop();
+
     }
 
 }
