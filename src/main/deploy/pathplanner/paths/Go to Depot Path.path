@@ -4,24 +4,24 @@
     {
       "anchor": {
         "x": 3.55,
-        "y": 6.0
+        "y": 0.67
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.537342361239683,
-        "y": 6.02249092659736
+        "x": 1.9923454071230144,
+        "y": 0.6808226135933027
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.15,
-        "y": 5.675
+        "x": 0.565,
+        "y": 0.67
       },
       "prevControl": {
-        "x": 2.4141936967286393,
-        "y": 5.647013187392844
+        "x": 2.3156684060983794,
+        "y": 0.6723774749276136
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Depot Auto Folder",
+  "folder": "Outpost Auto Folder",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0
