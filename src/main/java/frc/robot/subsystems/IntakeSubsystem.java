@@ -57,9 +57,13 @@ public class IntakeSubsystem extends SubsystemBase {
         shoot();
     }
 
+    public boolean isAtSpeed() {
+        return mainMotor.getEncoder().getVelocity() >= 300;
+    }
+
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("intakeEncoderTest", mainMotor.getEncoder().getPosition());
+        SmartDashboard.putNumber("FlywheelVelocity", mainMotor.getEncoder().getVelocity());
     }
 
 }

@@ -56,6 +56,7 @@ public class RobotContainer {
       OperatorConstants.kDriverControllerPort);
 
   private final CommandGenericHID m_gunnerController = new CommandGenericHID(OperatorConstants.kGunnerControllerPort);
+
   // private final XboxController driverController_HID =
   // m_driverController.getHID();
 
@@ -99,13 +100,15 @@ public class RobotContainer {
     swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
         () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(1), 0.1),
         () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(0), 0.1),
-        () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0.1)));
+        () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0.1),
+        m_driverController.leftBumper().getAsBoolean()));
 
     if (DriverStation.isTest()) {
       m_driverController.povRight()
           .onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetPose(new Pose2d(5, 5, new Rotation2d()))));
     }
-    m_driverController.leftBumper().whileTrue(new MoveToScoreCommand(swerveDriveSubsystem));
+    // m_driverController.leftBumper().whileTrue(new
+    // MoveToScoreCommand(swerveDriveSubsystem));
     m_driverController.rightBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
 
     m_gunnerController.button(1).whileTrue(new IntakeCommand(intakeSubsystem, hopperSubsystem));
