@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.io.File;
 import java.io.IOException;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
@@ -36,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import swervelib.SwerveDrive;
+import swervelib.math.SwerveMath;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
@@ -170,6 +172,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         return swerveDrive.getPose();
     }
 
+    public SwerveDrive getSwerveDrive() {
+        return swerveDrive;
+    }
+
     public void resetGyro() {
         swerveDrive.setGyro(new Rotation3d(0, 0, 0));
     }
@@ -223,33 +229,65 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      * @param angularRotationX Rotation of the robot to set
      * @return Drive command.
      */
-    public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY,
-            DoubleSupplier angularRotationX, boolean rotateToPoint) {
+    // public Command driveCommand(DoubleSupplier translationX, DoubleSupplier
+    // translationY,
+    // DoubleSupplier angularRotationX, boolean rotateToPoint) {
+    // return run(() -> {
+    // var x = translationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity();
+    // var y = translationY.getAsDouble() * swerveDrive.getMaximumChassisVelocity();
+
+    // var translation = new Translation2d(x, y);
+    // double rotation;
+
+    // if (rotateToPoint != true) {
+    // rotation = Math.pow(angularRotationX.getAsDouble(), 3)
+    // * swerveDrive.getMaximumChassisAngularVelocity();
+    // } else {
+    // rotation = getRotationToPoint(getHubPoint()) / Math.PI *
+    // swerveDrive.getMaximumChassisAngularVelocity();
+    // }
+
+    // // swerveDrive.drive(translation, rotation, true, false);
+    // swerveDrive.driveFieldOriented(new ChassisSpeeds(x, y, rotation));
+
+    // SmartDashboard.putNumber("MaxChassisAngularVelocity",
+    // swerveDrive.getMaximumChassisAngularVelocity());
+    // SmartDashboard.putNumber("MaxChassisVelocity",
+    // swerveDrive.getMaximumChassisVelocity());
+    // SmartDashboard.putNumber("X", x);
+    // SmartDashboard.putNumber("Y", y);
+    // SmartDashboard.putNumber("Rotation", rotation);
+
+    // });
+
+    // }
+
+    public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity) {
         return run(() -> {
-            var x = translationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity();
-            var y = translationY.getAsDouble() * swerveDrive.getMaximumChassisVelocity();
-
-            var translation = new Translation2d(x, y);
-            double rotation;
-
-            if (rotateToPoint != true) {
-                rotation = Math.pow(angularRotationX.getAsDouble(), 3)
-                        * swerveDrive.getMaximumChassisAngularVelocity();
-            } else {
-                rotation = getRotationToPoint(getHubPoint()) / Math.PI * swerveDrive.getMaximumChassisAngularVelocity();
-            }
-
-            // swerveDrive.drive(translation, rotation, true, false);
-            swerveDrive.driveFieldOriented(new ChassisSpeeds(x, y, rotation));
-
-            SmartDashboard.putNumber("MaxChassisAngularVelocity", swerveDrive.getMaximumChassisAngularVelocity());
-            SmartDashboard.putNumber("MaxChassisVelocity", swerveDrive.getMaximumChassisVelocity());
-            SmartDashboard.putNumber("X", x);
-            SmartDashboard.putNumber("Y", y);
-            SmartDashboard.putNumber("Rotation", rotation);
-
+            swerveDrive.driveFieldOriented(velocity.get());
         });
+    }
 
+    public void driveFieldOriented(ChassisSpeeds velocity) {
+        swerveDrive.driveFieldOriented(velocity);
+    }
+
+    public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX,
+            DoubleSupplier headingY) {
+        // swerveDrive.setHeadingCorrection(true); // Normally you would want heading
+        // correction for this kind of control.
+        return run(() -> {
+
+            Translation2d scaledInputs = SwerveMath.scaleTranslation(new Translation2d(translationX.getAsDouble(),
+                    translationY.getAsDouble()), 0.8);
+
+            // Make the robot move
+            driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(scaledInputs.getX(), scaledInputs.getY(),
+                    headingX.getAsDouble(),
+                    headingY.getAsDouble(),
+                    swerveDrive.getOdometryHeading().getRadians(),
+                    swerveDrive.getMaximumChassisVelocity()));
+        });
     }
 
     @Override
@@ -276,7 +314,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
                 .getBotPoseEstimate_wpiBlue_MegaTag2("limelight-back");
 
         // Add it to your pose estimator
-        // swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
+        swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
 
         if (frontLimelightMeasurement != null) {
             if (backLimelightMeasurement.pose.getX() >= 0 ||
@@ -308,8 +346,9 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             }
         }
 
-        // swerveDrive.updateOdometry();
+        swerveDrive.updateOdometry();
         m_field.setRobotPose(getPose());
+        SmartDashboard.putString("swerveModules", swerveDrive.getModules().toString());
 
     }
 }

@@ -29,6 +29,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
+import swervelib.SwerveInputStream;
 import frc.robot.subsystems.ClimberSubsystem.Stage;
 
 /**
@@ -97,11 +98,21 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
-        () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(1), 0.1),
-        () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(0), 0.1),
-        () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0.1),
-        m_driverController.leftBumper().getAsBoolean()));
+    // swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
+    // () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(1), 0.1),
+    // () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(0), 0.1),
+    // () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0.1),
+    // m_driverController.leftBumper().getAsBoolean()));
+    SwerveInputStream driveAngularVelocity = SwerveInputStream.of(swerveDriveSubsystem.getSwerveDrive(),
+        () -> m_driverController.getLeftY() * -1,
+        () -> m_driverController.getLeftX() * -1)
+        .withControllerRotationAxis(m_driverController::getRightX)
+        .deadband(0.1)
+        .scaleTranslation(0.8)
+        .allianceRelativeControl(true);
+
+    Command driveFieldOrientedAngularVelocityCommand = swerveDriveSubsystem.driveFieldOriented(driveAngularVelocity);
+    swerveDriveSubsystem.setDefaultCommand(driveFieldOrientedAngularVelocityCommand);
 
     if (DriverStation.isTest()) {
       m_driverController.povRight()
