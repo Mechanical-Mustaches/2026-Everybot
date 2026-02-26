@@ -58,9 +58,6 @@ public class RobotContainer {
 
   private final CommandGenericHID m_gunnerController = new CommandGenericHID(OperatorConstants.kGunnerControllerPort);
 
-  // private final XboxController driverController_HID =
-  // m_driverController.getHID();
-
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -98,11 +95,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
-    // () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(1), 0.1),
-    // () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(0), 0.1),
-    // () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0.1),
-    // m_driverController.leftBumper().getAsBoolean()));
+
     SwerveInputStream driveAngularVelocity = SwerveInputStream.of(swerveDriveSubsystem.getSwerveDrive(),
         () -> m_driverController.getLeftY() * -1,
         () -> m_driverController.getLeftX() * -1)

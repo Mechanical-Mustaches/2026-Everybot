@@ -205,10 +205,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         swerveDrive.drive(chassisSpeeds);
     }
 
-    public void driveFieldRelative(ChassisSpeeds chassisSpeeds) {
-        swerveDrive.driveFieldOriented(chassisSpeeds);
-    }
-
     /**
      * Command to drive the robot using translative values and heading as a
      * setpoint.
@@ -229,38 +225,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      * @param angularRotationX Rotation of the robot to set
      * @return Drive command.
      */
-    // public Command driveCommand(DoubleSupplier translationX, DoubleSupplier
-    // translationY,
-    // DoubleSupplier angularRotationX, boolean rotateToPoint) {
-    // return run(() -> {
-    // var x = translationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity();
-    // var y = translationY.getAsDouble() * swerveDrive.getMaximumChassisVelocity();
-
-    // var translation = new Translation2d(x, y);
-    // double rotation;
-
-    // if (rotateToPoint != true) {
-    // rotation = Math.pow(angularRotationX.getAsDouble(), 3)
-    // * swerveDrive.getMaximumChassisAngularVelocity();
-    // } else {
-    // rotation = getRotationToPoint(getHubPoint()) / Math.PI *
-    // swerveDrive.getMaximumChassisAngularVelocity();
-    // }
-
-    // // swerveDrive.drive(translation, rotation, true, false);
-    // swerveDrive.driveFieldOriented(new ChassisSpeeds(x, y, rotation));
-
-    // SmartDashboard.putNumber("MaxChassisAngularVelocity",
-    // swerveDrive.getMaximumChassisAngularVelocity());
-    // SmartDashboard.putNumber("MaxChassisVelocity",
-    // swerveDrive.getMaximumChassisVelocity());
-    // SmartDashboard.putNumber("X", x);
-    // SmartDashboard.putNumber("Y", y);
-    // SmartDashboard.putNumber("Rotation", rotation);
-
-    // });
-
-    // }
 
     public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity) {
         return run(() -> {
@@ -270,6 +234,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     public void driveFieldOriented(ChassisSpeeds velocity) {
         swerveDrive.driveFieldOriented(velocity);
+
     }
 
     public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX,
