@@ -33,8 +33,8 @@ public class ClimberSubsystem extends SubsystemBase {
     public enum Stage {
         S1(0.775),
         S2(0.886), // 1 revolution
-        S3(.45), // previously 0.150
-        S4(.2); // 2 revolutions
+        S3(.80), // previously 0.450
+        S4(.8);
 
         public final double encoderValue;
 
@@ -60,7 +60,7 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void climb() {
-        if (revolutions == 2 && Stage.S4.encoderValue - mainClimber.getAbsoluteEncoder().getPosition() <= 0.1) {
+        if (revolutions == 1 && Stage.S4.encoderValue - mainClimber.getAbsoluteEncoder().getPosition() <= 0.1) {
             mainClimber.set(0.4);
         } else {
             mainClimber.set(0.75);

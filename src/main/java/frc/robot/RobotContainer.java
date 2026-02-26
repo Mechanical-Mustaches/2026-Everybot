@@ -53,7 +53,7 @@ public class RobotContainer {
       OperatorConstants.kDriverControllerPort);
 
   private final CommandXboxController m_pitController = new CommandXboxController(
-      OperatorConstants.kDriverControllerPort);
+      OperatorConstants.kPitControllerPort);
 
   private final CommandGenericHID m_gunnerController = new CommandGenericHID(OperatorConstants.kGunnerControllerPort);
 
