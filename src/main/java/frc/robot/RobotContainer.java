@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.DoubleSupplier;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -115,6 +117,27 @@ public class RobotContainer {
           .scaleTranslation(0.8)
           .allianceRelativeControl(true);
     }
+
+    driveAngularVelocity = SwerveInputStream.of(swerveDriveSubsystem.getSwerveDrive(),
+        () -> m_driverController.getLeftY() * -1,
+        () -> m_driverController.getLeftX() * -1)
+        .withControllerRotationAxis(() -> {
+          if (!m_driverController.leftBumper().getAsBoolean()) {
+            return m_driverController.getRightX();
+          } else {
+            var swerveInput = swerveDriveSubsystem.getRotationToPoint(SwerveDriveSubsystem.getHubPoint())
+                / Math.PI;
+
+            if (0.4 <= Math.abs(swerveInput) && Math.abs(swerveInput) <= 0.035) {
+              return 0.25;
+            }
+
+            return swerveInput;
+          }
+        })
+        .deadband(0.1)
+        .scaleTranslation(0.8)
+        .allianceRelativeControl(true);
 
     Command driveFieldOrientedAngularVelocityCommand = swerveDriveSubsystem.driveFieldOriented(driveAngularVelocity);
     swerveDriveSubsystem.setDefaultCommand(driveFieldOrientedAngularVelocityCommand);

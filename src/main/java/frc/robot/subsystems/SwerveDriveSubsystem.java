@@ -17,6 +17,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import java.awt.geom.*;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -172,7 +173,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         Rotation2d angle = new Rotation2d(dx, dy);
 
-        return -angle.getRadians();
+        return -(MathUtil.angleModulus(swerveDrive.getGyro().getRotation3d().getZ()) - angle.getRadians());
     }
 
     public Pose2d getPose() {
