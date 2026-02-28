@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.io.File;
 import java.io.IOException;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
@@ -16,6 +17,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import java.awt.geom.*;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -36,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import swervelib.SwerveDrive;
+import swervelib.math.SwerveMath;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
@@ -52,12 +55,12 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     public static Point getHubPoint() {
 
-        // if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+        if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+            return kBlueHubPoint;
+        } else {
+            return kRedHubPoint;
+        }
         // return kBlueHubPoint;
-        // } else {
-        // return kRedHubPoint;
-        // }
-        return kBlueHubPoint;
 
     }
 
@@ -163,11 +166,22 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     }
 
     public double getRotationToPoint(Point point) {
-        return Math.atan2((getPose().getY() - point.y), (getPose().getX() - point.x));
+        Pose2d robotPose = getPose();
+
+        double dx = point.x - robotPose.getX();
+        double dy = point.y - robotPose.getY();
+
+        Rotation2d angle = new Rotation2d(dx, dy);
+
+        return -(MathUtil.angleModulus(swerveDrive.getGyro().getRotation3d().getZ()) - angle.getRadians());
     }
 
     public Pose2d getPose() {
         return swerveDrive.getPose();
+    }
+
+    public SwerveDrive getSwerveDrive() {
+        return swerveDrive;
     }
 
     public void resetGyro() {
@@ -199,10 +213,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         swerveDrive.drive(chassisSpeeds);
     }
 
-    public void driveFieldRelative(ChassisSpeeds chassisSpeeds) {
-        swerveDrive.driveFieldOriented(chassisSpeeds);
-    }
-
     /**
      * Command to drive the robot using translative values and heading as a
      * setpoint.
@@ -223,33 +233,34 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      * @param angularRotationX Rotation of the robot to set
      * @return Drive command.
      */
-    public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY,
-            DoubleSupplier angularRotationX, boolean rotateToPoint) {
+
+    public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity) {
         return run(() -> {
-            var x = translationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity();
-            var y = translationY.getAsDouble() * swerveDrive.getMaximumChassisVelocity();
-
-            var translation = new Translation2d(x, y);
-            double rotation;
-
-            if (rotateToPoint != true) {
-                rotation = Math.pow(angularRotationX.getAsDouble(), 3)
-                        * swerveDrive.getMaximumChassisAngularVelocity();
-            } else {
-                rotation = getRotationToPoint(getHubPoint()) / Math.PI * swerveDrive.getMaximumChassisAngularVelocity();
-            }
-
-            // swerveDrive.drive(translation, rotation, true, false);
-            swerveDrive.driveFieldOriented(new ChassisSpeeds(x, y, rotation));
-
-            SmartDashboard.putNumber("MaxChassisAngularVelocity", swerveDrive.getMaximumChassisAngularVelocity());
-            SmartDashboard.putNumber("MaxChassisVelocity", swerveDrive.getMaximumChassisVelocity());
-            SmartDashboard.putNumber("X", x);
-            SmartDashboard.putNumber("Y", y);
-            SmartDashboard.putNumber("Rotation", rotation);
-
+            swerveDrive.driveFieldOriented(velocity.get());
         });
+    }
 
+    public void driveFieldOriented(ChassisSpeeds velocity) {
+        swerveDrive.driveFieldOriented(velocity);
+
+    }
+
+    public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX,
+            DoubleSupplier headingY) {
+        // swerveDrive.setHeadingCorrection(true); // Normally you would want heading
+        // correction for this kind of control.
+        return run(() -> {
+
+            Translation2d scaledInputs = SwerveMath.scaleTranslation(new Translation2d(translationX.getAsDouble(),
+                    translationY.getAsDouble()), 0.8);
+
+            // Make the robot move
+            driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(scaledInputs.getX(), scaledInputs.getY(),
+                    headingX.getAsDouble(),
+                    headingY.getAsDouble(),
+                    swerveDrive.getOdometryHeading().getRadians(),
+                    swerveDrive.getMaximumChassisVelocity()));
+        });
     }
 
     @Override
@@ -264,7 +275,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
                 swerveDrive.getRobotVelocity().omegaRadiansPerSecond);
         SmartDashboard.putNumber("swerveRadius", swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters());
 
-        double robotYaw = swerveDrive.getGyro().getRotation3d().getY();
+        double robotYaw = Units.radiansToDegrees(swerveDrive.getGyro().getRotation3d().getZ());
 
         LimelightHelpers.SetRobotOrientation("limelight-front", robotYaw, 0.0, 0.0, 0.0, 0.0, 0.0);
         LimelightHelpers.SetRobotOrientation("limelight-back", robotYaw, 0.0, 0.0, 0.0, 0.0, 0.0);
@@ -276,11 +287,11 @@ public class SwerveDriveSubsystem extends SubsystemBase {
                 .getBotPoseEstimate_wpiBlue_MegaTag2("limelight-back");
 
         // Add it to your pose estimator
-        // swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
+        swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
 
-        if (frontLimelightMeasurement != null) {
-            if (backLimelightMeasurement.pose.getX() >= 0 ||
-                    backLimelightMeasurement.pose.getY() >= 0) {
+        if (frontLimelightMeasurement != null && frontLimelightMeasurement.tagCount > 0) {
+            if (frontLimelightMeasurement.pose.getX() >= 0 ||
+                    frontLimelightMeasurement.pose.getY() >= 0) {
                 swerveDrive.addVisionMeasurement(
                         frontLimelightMeasurement.pose,
                         frontLimelightMeasurement.timestampSeconds);
@@ -293,7 +304,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
                         LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-front").avgTagDist);
             }
         }
-        if (backLimelightMeasurement != null) {
+        if (backLimelightMeasurement != null && backLimelightMeasurement.tagCount > 0) {
             if (backLimelightMeasurement.pose.getX() >= 0 ||
                     backLimelightMeasurement.pose.getY() >= 0) {
                 swerveDrive.addVisionMeasurement(
@@ -308,8 +319,12 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             }
         }
 
-        // swerveDrive.updateOdometry();
+        swerveDrive.updateOdometry();
         m_field.setRobotPose(getPose());
+        SmartDashboard.putString("swerveModules", swerveDrive.getModules().toString());
+
+        SmartDashboard.putBoolean("allianceIsBlue", DriverStation.getAlliance().get() == DriverStation.Alliance.Blue);
+        SmartDashboard.putNumber("rotationToHub", getRotationToPoint(getHubPoint()));
 
     }
 }

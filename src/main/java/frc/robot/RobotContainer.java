@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.DoubleSupplier;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -30,6 +32,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
+import swervelib.SwerveInputStream;
 import frc.robot.subsystems.ClimberSubsystem.Stage;
 
 /**
@@ -57,9 +60,6 @@ public class RobotContainer {
       OperatorConstants.kPitControllerPort);
 
   private final CommandGenericHID m_gunnerController = new CommandGenericHID(OperatorConstants.kGunnerControllerPort);
-
-  // private final XboxController driverController_HID =
-  // m_driverController.getHID();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -98,11 +98,50 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
-        () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(1), 0.1),
-        () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(0), 0.1),
-        () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0.1),
-        m_driverController.leftBumper().getAsBoolean()));
+    SwerveInputStream driveAngularVelocity;
+
+    if (!m_driverController.leftBumper().getAsBoolean()) {
+      driveAngularVelocity = SwerveInputStream.of(swerveDriveSubsystem.getSwerveDrive(),
+          () -> m_driverController.getLeftY() * -1,
+          () -> m_driverController.getLeftX() * -1)
+          .withControllerRotationAxis(m_driverController::getRightX)
+          .deadband(0.1)
+          .scaleTranslation(0.8)
+          .allianceRelativeControl(true);
+    } else {
+      driveAngularVelocity = SwerveInputStream.of(swerveDriveSubsystem.getSwerveDrive(),
+          () -> m_driverController.getLeftY() * -1,
+          () -> m_driverController.getLeftX() * -1)
+          .withControllerRotationAxis(
+              () -> (swerveDriveSubsystem.getRotationToPoint(SwerveDriveSubsystem.getHubPoint()) / Math.PI))
+          .deadband(0.1)
+          .scaleTranslation(0.8)
+          .allianceRelativeControl(true);
+    }
+
+    driveAngularVelocity = SwerveInputStream.of(swerveDriveSubsystem.getSwerveDrive(),
+        () -> m_driverController.getLeftY() * -1,
+        () -> m_driverController.getLeftX() * -1)
+        .withControllerRotationAxis(() -> {
+          if (!m_driverController.leftBumper().getAsBoolean()) {
+            return m_driverController.getRightX();
+          } else {
+            var swerveInput = swerveDriveSubsystem.getRotationToPoint(SwerveDriveSubsystem.getHubPoint())
+                / Math.PI;
+
+            if (0.4 <= Math.abs(swerveInput) && Math.abs(swerveInput) <= 0.035) {
+              return 0.25;
+            }
+
+            return swerveInput;
+          }
+        })
+        .deadband(0.1)
+        .scaleTranslation(0.8)
+        .allianceRelativeControl(true);
+
+    Command driveFieldOrientedAngularVelocityCommand = swerveDriveSubsystem.driveFieldOriented(driveAngularVelocity);
+    swerveDriveSubsystem.setDefaultCommand(driveFieldOrientedAngularVelocityCommand);
 
     if (DriverStation.isTest()) {
       m_driverController.povRight()
