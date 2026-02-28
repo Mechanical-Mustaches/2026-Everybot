@@ -54,12 +54,12 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     public static Point getHubPoint() {
 
-        // if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+        if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+            return kBlueHubPoint;
+        } else {
+            return kRedHubPoint;
+        }
         // return kBlueHubPoint;
-        // } else {
-        // return kRedHubPoint;
-        // }
-        return kBlueHubPoint;
 
     }
 
@@ -165,7 +165,14 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     }
 
     public double getRotationToPoint(Point point) {
-        return Math.atan2((getPose().getY() - point.y), (getPose().getX() - point.x));
+        Pose2d robotPose = getPose();
+
+        double dx = point.x - robotPose.getX();
+        double dy = point.y - robotPose.getY();
+
+        Rotation2d angle = new Rotation2d(dx, dy);
+
+        return -angle.getRadians();
     }
 
     public Pose2d getPose() {
@@ -267,7 +274,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
                 swerveDrive.getRobotVelocity().omegaRadiansPerSecond);
         SmartDashboard.putNumber("swerveRadius", swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters());
 
-        double robotYaw = swerveDrive.getGyro().getRotation3d().getZ();
+        double robotYaw = Units.radiansToDegrees(swerveDrive.getGyro().getRotation3d().getZ());
 
         LimelightHelpers.SetRobotOrientation("limelight-front", robotYaw, 0.0, 0.0, 0.0, 0.0, 0.0);
         LimelightHelpers.SetRobotOrientation("limelight-back", robotYaw, 0.0, 0.0, 0.0, 0.0, 0.0);
@@ -314,6 +321,9 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         swerveDrive.updateOdometry();
         m_field.setRobotPose(getPose());
         SmartDashboard.putString("swerveModules", swerveDrive.getModules().toString());
+
+        SmartDashboard.putBoolean("allianceIsBlue", DriverStation.getAlliance().get() == DriverStation.Alliance.Blue);
+        SmartDashboard.putNumber("rotationToHub", getRotationToPoint(getHubPoint()));
 
     }
 }

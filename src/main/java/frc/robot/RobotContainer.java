@@ -95,14 +95,26 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    SwerveInputStream driveAngularVelocity;
 
-    SwerveInputStream driveAngularVelocity = SwerveInputStream.of(swerveDriveSubsystem.getSwerveDrive(),
-        () -> m_driverController.getLeftY() * -1,
-        () -> m_driverController.getLeftX() * -1)
-        .withControllerRotationAxis(m_driverController::getRightX)
-        .deadband(0.1)
-        .scaleTranslation(0.8)
-        .allianceRelativeControl(true);
+    if (!m_driverController.leftBumper().getAsBoolean()) {
+      driveAngularVelocity = SwerveInputStream.of(swerveDriveSubsystem.getSwerveDrive(),
+          () -> m_driverController.getLeftY() * -1,
+          () -> m_driverController.getLeftX() * -1)
+          .withControllerRotationAxis(m_driverController::getRightX)
+          .deadband(0.1)
+          .scaleTranslation(0.8)
+          .allianceRelativeControl(true);
+    } else {
+      driveAngularVelocity = SwerveInputStream.of(swerveDriveSubsystem.getSwerveDrive(),
+          () -> m_driverController.getLeftY() * -1,
+          () -> m_driverController.getLeftX() * -1)
+          .withControllerRotationAxis(
+              () -> (swerveDriveSubsystem.getRotationToPoint(SwerveDriveSubsystem.getHubPoint()) / Math.PI))
+          .deadband(0.1)
+          .scaleTranslation(0.8)
+          .allianceRelativeControl(true);
+    }
 
     Command driveFieldOrientedAngularVelocityCommand = swerveDriveSubsystem.driveFieldOriented(driveAngularVelocity);
     swerveDriveSubsystem.setDefaultCommand(driveFieldOrientedAngularVelocityCommand);
