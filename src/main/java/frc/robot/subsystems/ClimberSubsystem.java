@@ -16,7 +16,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
     int revolutions = 1;
     double previousPose = 0;
-    double mainStageTolerance = 0.01;
+    double mainStageTolerance = 0.015;
     double stage4Tolerance = 0.005;
 
     /**
@@ -68,11 +68,11 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void dumbClimb() {
-        mainClimber.set(.3);
+        mainClimber.set(.5);
     }
 
     public void dumbUnClimb() {
-        mainClimber.set(-.3);
+        mainClimber.set(-.5);
     }
 
     public void stop() {

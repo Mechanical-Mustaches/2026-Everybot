@@ -45,6 +45,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Typical Paths Folder",
+  "folder": null,
   "choreoAuto": false
 }
