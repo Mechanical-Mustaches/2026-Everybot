@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -14,8 +16,21 @@ public class IntakeSubsystem extends SubsystemBase {
     SparkMax mainMotor = new SparkMax(12, MotorType.kBrushless);
     SparkMax mainMotorFollower = new SparkMax(11, MotorType.kBrushless);
     SparkMax indexMotor = new SparkMax(10, MotorType.kBrushless);
-
     SparkMaxConfig mainMotorFollowerConfig = new SparkMaxConfig();
+
+    private record AmperageMeasurements(long time, double amperage) {
+        public boolean isRecent(long milliseconds) {
+            return System.currentTimeMillis() - time <= milliseconds;
+        }
+    }
+
+    private ArrayList<AmperageMeasurements> amperageMeasurements = new ArrayList<AmperageMeasurements>();
+
+    private static final long MEASUREMENT_WINDOW = 500;
+    // this number represents the minimum number of recent measurements needed to
+    // calculate average amperage
+    private static final int RECENT_MEASUREMENT_COUNT = 5;
+    public static final double FUEL_DETECTION_THRESHOLD = 15;
 
     public IntakeSubsystem() {
         mainMotorFollowerConfig.follow(12, true);
@@ -55,6 +70,32 @@ public class IntakeSubsystem extends SubsystemBase {
     public void feed() {
         indexOut();
         shoot();
+    }
+
+    private double getAverageAmperage() {
+        if (amperageMeasurements.isEmpty()) {
+            return 0;
+        }
+
+        var recentMeasurementCount = 0;
+        double sumOfElements = 0;
+
+        for (var measurement : amperageMeasurements) {
+            sumOfElements = sumOfElements + measurement.amperage;
+            if (measurement.isRecent(MEASUREMENT_WINDOW)) {
+                recentMeasurementCount = recentMeasurementCount + 1;
+            }
+        }
+
+        if (recentMeasurementCount < RECENT_MEASUREMENT_COUNT) {
+            return 0;
+        }
+
+        return sumOfElements / amperageMeasurements.size();
+    }
+
+    public boolean isFuelDetected() {
+        return getAverageAmperage() > FUEL_DETECTION_THRESHOLD;
     }
 
     public boolean isAtSpeed() {

@@ -46,7 +46,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     private static Point kRedHubPoint = new Point(4.034663, 4.625594);
     private static Point kBlueHubPoint = new Point(4.034663, 4.625594);
-    private static double kScoringRadius = Units.inchesToMeters(60 - 16.5);
+    private static double kScoringRadius = Units.inchesToMeters(60 + 16.5);
     private static double kPositionTolerance = Units.inchesToMeters(3);
     private static double kApproachingTolerance = Units.inchesToMeters(10);
 

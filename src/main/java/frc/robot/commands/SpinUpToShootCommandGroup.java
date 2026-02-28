@@ -10,10 +10,11 @@ public class SpinUpToShootCommandGroup extends SequentialCommandGroup {
 
     IntakeSubsystem intakeSubsystem;
     HopperSubsystem hopperSubsystem;
+    boolean isAuto;
 
-    public SpinUpToShootCommandGroup(IntakeSubsystem intakeSubsystem, HopperSubsystem hopperSubsystem) {
+    public SpinUpToShootCommandGroup(IntakeSubsystem intakeSubsystem, HopperSubsystem hopperSubsystem, Boolean isAuto) {
         addCommands(new ParallelRaceGroup(
-                new SpinUpCommand(intakeSubsystem),
+                new SpinUpCommand(intakeSubsystem, isAuto),
                 new WaitCommand(0.5)), new ShootCommand(intakeSubsystem, hopperSubsystem));
     }
 

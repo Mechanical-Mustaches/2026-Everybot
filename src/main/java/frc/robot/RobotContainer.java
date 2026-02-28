@@ -25,6 +25,7 @@ import frc.robot.commands.MoveToScoreCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.SpinUpToShootCommandGroup;
 import frc.robot.commands.StopCommand;
+import frc.robot.commands.AutoCommands.ShootAllCommandGroup;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -71,10 +72,10 @@ public class RobotContainer {
     hopperSubsystem = new HopperSubsystem();
     // Configure the trigger bindings
 
-    NamedCommands.registerCommand("Shoot", new ShootCommand(intakeSubsystem, hopperSubsystem));
-    NamedCommands.registerCommand("Climb", new ClimberCommand(climberSubsystem, Stage.S1));
-    NamedCommands.registerCommand("AlignScore", new MoveToScoreCommand(swerveDriveSubsystem));
-    NamedCommands.registerCommand("AlignClimb", new MoveToScoreCommand(swerveDriveSubsystem));
+    NamedCommands.registerCommand("Shoot", new ShootAllCommandGroup(intakeSubsystem, hopperSubsystem));
+    NamedCommands.registerCommand("Climb", new ClimberCommand(climberSubsystem, Stage.S3));
+    NamedCommands.registerCommand("PreClimb", new ClimberCommand(climberSubsystem, Stage.S1));
+    NamedCommands.registerCommand("Intake", new IntakeCommand(intakeSubsystem, hopperSubsystem));
 
     configureBindings();
 
@@ -112,7 +113,7 @@ public class RobotContainer {
     m_driverController.rightBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
 
     m_gunnerController.button(1).whileTrue(new IntakeCommand(intakeSubsystem, hopperSubsystem));
-    m_gunnerController.button(8).onTrue(new SpinUpToShootCommandGroup(intakeSubsystem, hopperSubsystem)
+    m_gunnerController.button(8).onTrue(new SpinUpToShootCommandGroup(intakeSubsystem, hopperSubsystem, false)
         .until(() -> !m_gunnerController.button(8).getAsBoolean()));
     m_gunnerController.button(4)
         .onFalse(new StopCommand(intakeSubsystem, hopperSubsystem));

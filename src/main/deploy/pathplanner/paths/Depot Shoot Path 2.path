@@ -4,40 +4,24 @@
     {
       "anchor": {
         "x": 1.15,
-        "y": 5.675
+        "y": 6.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.41588589697565537,
-        "y": 5.693098520740701
+        "x": 1.6394431279620854,
+        "y": 6.281007109004739
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.471,
+        "x": 2.484,
         "y": 5.675
       },
       "prevControl": {
-        "x": 0.7204882876975686,
-        "y": 5.659012683097679
-      },
-      "nextControl": {
-        "x": 0.22151171230243138,
-        "y": 5.690987316902321
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 1.15,
-        "y": 5.675
-      },
-      "prevControl": {
-        "x": 0.9013417820196696,
-        "y": 5.700866786248905
+        "x": 2.0263151658767775,
+        "y": 5.947867298578199
       },
       "nextControl": null,
       "isLocked": false,
@@ -58,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 146.75
   },
   "reversed": false,
   "folder": "Depot Auto Folder",

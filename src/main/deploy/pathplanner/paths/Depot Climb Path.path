@@ -3,57 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.1546883790489244,
+        "x": 2.484,
         "y": 5.675
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.131375622389913,
-        "y": 5.923910657419399
+        "x": 1.886881667817172,
+        "y": 4.78078776769403
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.15,
-        "y": 5.95
+        "x": 1.55,
+        "y": 4.1
       },
       "prevControl": {
-        "x": 1.399985685844207,
-        "y": 5.947324766738885
-      },
-      "nextControl": {
-        "x": 0.9000143141557928,
-        "y": 5.9526752332611155
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 0.5,
-        "y": 5.95
-      },
-      "prevControl": {
-        "x": 0.25022286299695096,
-        "y": 5.960553759072486
-      },
-      "nextControl": {
-        "x": 0.749777137003049,
-        "y": 5.939446240927515
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 1.15,
-        "y": 5.95
-      },
-      "prevControl": {
-        "x": 0.9057259787352043,
-        "y": 6.003199647885359
+        "x": 2.2114713182343486,
+        "y": 5.1006457308629365
       },
       "nextControl": null,
       "isLocked": false,
@@ -80,7 +48,7 @@
   "folder": "Depot Auto Folder",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 146.75
   },
   "useDefaultConstraints": true
 }

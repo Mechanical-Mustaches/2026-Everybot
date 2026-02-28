@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9923454071230144,
-        "y": 0.6808226135933027
+        "x": 4.55,
+        "y": 0.6699999999999999
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.565,
-        "y": 0.67
+        "x": 3.55,
+        "y": 2.0
       },
       "prevControl": {
-        "x": 2.3156684060983794,
-        "y": 0.6723774749276136
+        "x": 2.55,
+        "y": 2.0
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "Outpost Auto Folder",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

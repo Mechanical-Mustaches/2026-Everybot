@@ -7,31 +7,94 @@
         {
           "type": "path",
           "data": {
-            "pathName": null
+            "pathName": "Depot Shoot Path 1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Depot Collection Path 1"
+            "pathName": "Depot Go to Collect Path"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Depot Collection Path 1"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Depot Collection Path 2"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Depot Collection Path 3"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Depot Collection Path 4"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "PreClimb"
+                }
+              }
+            ]
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Depot Collection Path 2"
+            "pathName": "Depot Climb Path"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Depot Collection Path 3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Depot Collection Path 4"
+            "name": "Climb"
           }
         }
       ]

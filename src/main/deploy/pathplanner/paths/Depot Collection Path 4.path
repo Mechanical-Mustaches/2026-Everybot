@@ -48,19 +48,24 @@
     },
     {
       "anchor": {
-        "x": 1.15,
-        "y": 6.5
+        "x": 2.484,
+        "y": 5.675
       },
       "prevControl": {
-        "x": 0.9057259787352043,
-        "y": 6.553199647885359
+        "x": 1.531978672985781,
+        "y": 6.485189573459715
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": 180.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -73,8 +78,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 180.0
+    "velocity": 0.0,
+    "rotation": 146.75
   },
   "reversed": false,
   "folder": "Depot Auto Folder",
