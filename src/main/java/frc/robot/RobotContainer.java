@@ -28,6 +28,7 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.MoveToScoreCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.SpinUpToShootCommandGroup;
+import frc.robot.commands.SpitCommand;
 import frc.robot.commands.StopCommand;
 import frc.robot.commands.AutoCommands.ShootAllCommandGroup;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -169,8 +170,10 @@ public class RobotContainer {
     m_gunnerController.button(4).onTrue(new InstantCommand(() -> hopperSubsystem.conveyorOut()));
     m_gunnerController.button(4).onFalse(new InstantCommand(() -> hopperSubsystem.conveyorStop()));
 
-    m_gunnerController.button(2).onTrue(new InstantCommand(() -> intakeSubsystem.reverseIntake()));
-    m_gunnerController.button(2).onFalse(new InstantCommand(() -> intakeSubsystem.stopShooter()));
+    m_gunnerController.button(7).onTrue(new InstantCommand(() -> intakeSubsystem.reverseIntake()));
+    m_gunnerController.button(7).onFalse(new InstantCommand(() -> intakeSubsystem.stopShooter()));
+
+    m_gunnerController.button(2).whileTrue(new SpitCommand(intakeSubsystem));
 
     m_pitController.povLeft().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
     m_pitController.povLeft().onFalse(new InstantCommand(() -> climberSubsystem.stop()));
