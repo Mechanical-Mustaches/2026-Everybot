@@ -13,8 +13,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSubsystem extends SubsystemBase {
 
-    SparkMax mainMotor = new SparkMax(12, MotorType.kBrushless);
-    SparkMax mainMotorFollower = new SparkMax(11, MotorType.kBrushless);
+    SparkMax mainMotor = new SparkMax(11, MotorType.kBrushless);
+    // SparkMax mainMotorFollower = new SparkMax(12, MotorType.kBrushless);
     SparkMax indexMotor = new SparkMax(10, MotorType.kBrushless);
     SparkMaxConfig mainMotorFollowerConfig = new SparkMaxConfig();
 
@@ -33,9 +33,10 @@ public class IntakeSubsystem extends SubsystemBase {
     public static final double FUEL_DETECTION_THRESHOLD = 15;
 
     public IntakeSubsystem() {
-        mainMotorFollowerConfig.follow(12, true);
-        mainMotorFollower.configure(mainMotorFollowerConfig, ResetMode.kNoResetSafeParameters,
-                PersistMode.kNoPersistParameters);
+        mainMotorFollowerConfig.follow(11, true);
+        // mainMotorFollower.configure(mainMotorFollowerConfig,
+        // ResetMode.kNoResetSafeParameters,
+        // PersistMode.kNoPersistParameters);
 
     }
 
