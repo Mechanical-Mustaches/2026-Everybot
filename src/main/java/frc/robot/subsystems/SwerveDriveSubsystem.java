@@ -147,14 +147,14 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     }
 
     public boolean isInRange() {
-        if (distanceToPoint(getNearestScoringPoint()) <= kPositionTolerance) {
+        if (distanceToPoint(getHubPoint()) <= kScoringRadius + kPositionTolerance) {
             return true;
         } else
             return false;
     }
 
     public boolean isApproaching() {
-        if (distanceToPoint(getNearestScoringPoint()) <= kApproachingTolerance) {
+        if (distanceToPoint(getHubPoint()) <= kScoringRadius + kApproachingTolerance) {
             return true;
         } else
             return false;
