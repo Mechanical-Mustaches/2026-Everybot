@@ -12,11 +12,13 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -170,10 +172,18 @@ public class RobotContainer {
     m_gunnerController.button(2).onTrue(new InstantCommand(() -> intakeSubsystem.reverseIntake()));
     m_gunnerController.button(2).onFalse(new InstantCommand(() -> intakeSubsystem.stopShooter()));
 
-    m_pitController.povUp().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
-    m_pitController.povUp().onFalse(new InstantCommand(() -> climberSubsystem.stop()));
-    m_pitController.povDown().onTrue(new InstantCommand(() -> climberSubsystem.dumbUnClimb()));
-    m_pitController.povDown().onFalse(new InstantCommand(() -> climberSubsystem.stop()));
+    m_pitController.povLeft().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
+    m_pitController.povLeft().onFalse(new InstantCommand(() -> climberSubsystem.stop()));
+    m_pitController.povRight().onTrue(new InstantCommand(() -> climberSubsystem.dumbUnClimb()));
+    m_pitController.povRight().onFalse(new InstantCommand(() -> climberSubsystem.stop()));
+    m_pitController.povUp()
+        .whileTrue(new RunCommand(() -> swerveDriveSubsystem.driveRobotRelative(new ChassisSpeeds(1, 0, 0))));
+    m_pitController.povUp()
+        .onFalse(new InstantCommand(() -> swerveDriveSubsystem.driveRobotRelative(new ChassisSpeeds(0, 0, 0))));
+    m_driverController.povUp()
+        .whileTrue(new RunCommand(() -> swerveDriveSubsystem.driveRobotRelative(new ChassisSpeeds(1, 0, 0))));
+    m_driverController.povUp()
+        .onFalse(new InstantCommand(() -> swerveDriveSubsystem.driveRobotRelative(new ChassisSpeeds(0, 0, 0))));
   }
 
   /**
