@@ -4,15 +4,19 @@
 
 package frc.robot;
 
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -53,6 +57,7 @@ public class RobotContainer {
   public final IntakeSubsystem intakeSubsystem;
   private final SwerveDriveSubsystem swerveDriveSubsystem;
   private final HopperSubsystem hopperSubsystem;
+  private final PathPlannerAuto pathPlannerAuto;
 
   private final SendableChooser<Command> autoChooser;
 
@@ -73,17 +78,23 @@ public class RobotContainer {
     climberSubsystem = new ClimberSubsystem();
     intakeSubsystem = new IntakeSubsystem();
     hopperSubsystem = new HopperSubsystem();
+
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    pathPlannerAuto = new PathPlannerAuto(autoChooser.getSelected().getName());
+
     // Configure the trigger bindings
 
     NamedCommands.registerCommand("Shoot", new ShootAllCommandGroup(intakeSubsystem, hopperSubsystem));
     NamedCommands.registerCommand("Climb", new ClimberCommand(climberSubsystem, Stage.S3));
     NamedCommands.registerCommand("PreClimb", new ClimberCommand(climberSubsystem, Stage.S1));
     NamedCommands.registerCommand("Intake", new IntakeCommand(intakeSubsystem, hopperSubsystem));
+    NamedCommands.registerCommand("resetPoseMiddle",
+        new InstantCommand(() -> swerveDriveSubsystem.resetPose(pathPlannerAuto.getStartingPose())));
 
     configureBindings();
 
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   /**
