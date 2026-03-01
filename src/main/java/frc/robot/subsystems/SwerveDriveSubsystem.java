@@ -52,6 +52,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     private static double kScoringRadius = Units.inchesToMeters(60 + 16.5);
     private static double kPositionTolerance = Units.inchesToMeters(3);
     private static double kApproachingTolerance = Units.inchesToMeters(10);
+    private static double kRotateToPointOffset = 0;
 
     public static Point getHubPoint() {
 
@@ -139,8 +140,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     }
 
     public double distanceToPoint(Point targetPoint) {
-        var dX = targetPoint.x - getPose().getX();
-        var dY = targetPoint.y - getPose().getY();
+        var dX = Math.abs(targetPoint.x - getPose().getX());
+        var dY = Math.abs(targetPoint.y - getPose().getY());
         var dist = Math.sqrt((dX * dX) + (dY * dY));
         return dist;
     }
@@ -173,7 +174,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         Rotation2d angle = new Rotation2d(dx, dy);
 
-        return -(MathUtil.angleModulus(swerveDrive.getGyro().getRotation3d().getZ()) - angle.getRadians());
+        return (MathUtil.angleModulus(swerveDrive.getGyro().getRotation3d().getZ()) + kRotateToPointOffset
+                - angle.getRadians());
     }
 
     public Pose2d getPose() {

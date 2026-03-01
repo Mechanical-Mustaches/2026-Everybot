@@ -132,7 +132,7 @@ public class RobotContainer {
                 / Math.PI;
 
             if (0.4 <= Math.abs(swerveInput) && Math.abs(swerveInput) <= 0.035) {
-              return 0.25;
+              return 0.1;
             }
 
             return swerveInput;
