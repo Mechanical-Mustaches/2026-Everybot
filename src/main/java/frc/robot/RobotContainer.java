@@ -1,7 +1,6 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
 import java.util.Optional;
@@ -44,178 +43,174 @@ import frc.robot.subsystems.ClimberSubsystem.Stage;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
- * Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in
- * the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of
- * the robot (including
- * subsystems, commands, and trigger mappings) should be declared here.
+ * Command-based is a "declarative" paradigm, very little robot logic should
+ * actually be handled in the {@link Robot} periodic methods (other than the
+ * scheduler calls). Instead, the structure of the robot (including subsystems,
+ * commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
 
-  public final ClimberSubsystem climberSubsystem;
-  public final IntakeSubsystem intakeSubsystem;
-  private final SwerveDriveSubsystem swerveDriveSubsystem;
-  private final HopperSubsystem hopperSubsystem;
-  private final PathPlannerAuto pathPlannerAuto;
+    public final ClimberSubsystem climberSubsystem;
+    public final IntakeSubsystem intakeSubsystem;
+    private final SwerveDriveSubsystem swerveDriveSubsystem;
+    private final HopperSubsystem hopperSubsystem;
 
   public final ShootAllCommandGroup shootAll;
 
   private final SendableChooser<Command> autoChooser;
 
-  private final CommandXboxController m_driverController = new CommandXboxController(
-      OperatorConstants.kDriverControllerPort);
+    private final CommandXboxController m_driverController = new CommandXboxController(
+            OperatorConstants.kDriverControllerPort);
 
-  private final CommandXboxController m_pitController = new CommandXboxController(
-      OperatorConstants.kPitControllerPort);
+    private final CommandXboxController m_pitController = new CommandXboxController(
+            OperatorConstants.kPitControllerPort);
 
-  private final CommandGenericHID m_gunnerController = new CommandGenericHID(OperatorConstants.kGunnerControllerPort);
+    private final CommandGenericHID m_gunnerController = new CommandGenericHID(OperatorConstants.kGunnerControllerPort);
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
-  public RobotContainer() {
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and
+     * commands.
+     */
+    public RobotContainer() {
 
-    swerveDriveSubsystem = new SwerveDriveSubsystem();
-    climberSubsystem = new ClimberSubsystem();
-    intakeSubsystem = new IntakeSubsystem();
-    hopperSubsystem = new HopperSubsystem();
+        swerveDriveSubsystem = new SwerveDriveSubsystem();
+        climberSubsystem = new ClimberSubsystem();
+        intakeSubsystem = new IntakeSubsystem();
+        hopperSubsystem = new HopperSubsystem();
 
     shootAll = new ShootAllCommandGroup(intakeSubsystem, hopperSubsystem);
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
-    pathPlannerAuto = new PathPlannerAuto(autoChooser.getSelected().getName());
+        // Configure the trigger bindings
+        NamedCommands.registerCommand("Shoot", new ShootAllCommandGroup(intakeSubsystem, hopperSubsystem));
+        NamedCommands.registerCommand("Climb", new ClimberCommand(climberSubsystem, Stage.S3));
+        NamedCommands.registerCommand("PreClimb", new ClimberCommand(climberSubsystem, Stage.S1));
+        NamedCommands.registerCommand("Intake", new IntakeCommand(intakeSubsystem, hopperSubsystem));
+        NamedCommands.registerCommand("Set Initial Pose",
+                new InstantCommand(() -> swerveDriveSubsystem
+                .resetPose(new PathPlannerAuto(autoChooser.getSelected().getName()).getStartingPose())));
 
-    // Configure the trigger bindings
+        configureBindings();
 
-    NamedCommands.registerCommand("Shoot", new ShootAllCommandGroup(intakeSubsystem, hopperSubsystem));
-    NamedCommands.registerCommand("Climb", new ClimberCommand(climberSubsystem, Stage.S3));
-    NamedCommands.registerCommand("PreClimb", new ClimberCommand(climberSubsystem, Stage.S1));
-    NamedCommands.registerCommand("Intake", new IntakeCommand(intakeSubsystem, hopperSubsystem));
-    NamedCommands.registerCommand("resetPoseMiddle",
-        new InstantCommand(() -> swerveDriveSubsystem.resetPose(pathPlannerAuto.getStartingPose())));
+    }
 
-    configureBindings();
-
-  }
-
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be
-   * created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
-   * an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
-   * {@link
+    /**
+     * Use this method to define your trigger->command mappings. Triggers can be
+     * created via the
+     * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor
+     * with an arbitrary predicate, or via the named factories in {@link
+     * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for      {@link
    * CommandXboxController
-   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or
-   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+     * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+     * PS4} controllers or      {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
-   */
-  private void configureBindings() {
-    SwerveInputStream driveAngularVelocity;
+     */
+    private void configureBindings() {
+        SwerveInputStream driveAngularVelocity;
 
-    if (!m_driverController.leftBumper().getAsBoolean()) {
-      driveAngularVelocity = SwerveInputStream.of(swerveDriveSubsystem.getSwerveDrive(),
-          () -> m_driverController.getLeftY() * -1,
-          () -> m_driverController.getLeftX() * -1)
-          .withControllerRotationAxis(m_driverController::getRightX)
-          .deadband(0.1)
-          .scaleTranslation(0.8)
-          .allianceRelativeControl(true);
-    } else {
-      driveAngularVelocity = SwerveInputStream.of(swerveDriveSubsystem.getSwerveDrive(),
-          () -> m_driverController.getLeftY() * -1,
-          () -> m_driverController.getLeftX() * -1)
-          .withControllerRotationAxis(
-              () -> (swerveDriveSubsystem.getRotationToPoint(SwerveDriveSubsystem.getHubPoint()) / Math.PI))
-          .deadband(0.1)
-          .scaleTranslation(0.8)
-          .allianceRelativeControl(true);
+        if (!m_driverController.leftBumper().getAsBoolean()) {
+            driveAngularVelocity = SwerveInputStream.of(swerveDriveSubsystem.getSwerveDrive(),
+                    () -> m_driverController.getLeftY() * -1,
+                    () -> m_driverController.getLeftX() * -1)
+                    .withControllerRotationAxis(m_driverController::getRightX)
+                    .deadband(0.1)
+                    .scaleTranslation(0.8)
+                    .allianceRelativeControl(true);
+        } else {
+            driveAngularVelocity = SwerveInputStream.of(swerveDriveSubsystem.getSwerveDrive(),
+                    () -> m_driverController.getLeftY() * -1,
+                    () -> m_driverController.getLeftX() * -1)
+                    .withControllerRotationAxis(
+                            () -> (swerveDriveSubsystem.getRotationToPoint(SwerveDriveSubsystem.getHubPoint()) / Math.PI))
+                    .deadband(0.1)
+                    .scaleTranslation(0.8)
+                    .allianceRelativeControl(true);
+        }
+
+        driveAngularVelocity = SwerveInputStream.of(swerveDriveSubsystem.getSwerveDrive(),
+                () -> m_driverController.getLeftY() * -1,
+                () -> m_driverController.getLeftX() * -1)
+                .withControllerRotationAxis(() -> {
+                    if (!m_driverController.leftBumper().getAsBoolean()) {
+                        return m_driverController.getRightX();
+                    } else {
+                        var swerveInput = swerveDriveSubsystem.getRotationToPoint(SwerveDriveSubsystem.getHubPoint())
+                                / Math.PI;
+
+                        if (0.4 <= Math.abs(swerveInput) && Math.abs(swerveInput) <= 0.035) {
+                            return 0.1;
+                        }
+
+                        return swerveInput;
+                    }
+                })
+                .deadband(0.1)
+                .scaleTranslation(0.8)
+                .allianceRelativeControl(true);
+
+        Command driveFieldOrientedAngularVelocityCommand = swerveDriveSubsystem.driveFieldOriented(driveAngularVelocity);
+        swerveDriveSubsystem.setDefaultCommand(driveFieldOrientedAngularVelocityCommand);
+
+        if (DriverStation.isTest()) {
+            m_driverController.povRight()
+                    .onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetPose(new Pose2d(5, 5, new Rotation2d()))));
+        }
+        // m_driverController.leftBumper().whileTrue(new
+        // MoveToScoreCommand(swerveDriveSubsystem));
+        m_driverController.rightBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
+
+        m_gunnerController.button(1).whileTrue(new IntakeCommand(intakeSubsystem, hopperSubsystem));
+        m_gunnerController.button(8).onTrue(new SpinUpToShootCommandGroup(intakeSubsystem, hopperSubsystem, false)
+                .until(() -> !m_gunnerController.button(8).getAsBoolean()));
+        m_gunnerController.button(4)
+                .onFalse(new StopCommand(intakeSubsystem, hopperSubsystem));
+
+        m_gunnerController.button(12).whileTrue(new ClimberCommand(climberSubsystem, Stage.S4));
+        m_gunnerController.button(9).whileTrue(new ClimberCommand(climberSubsystem, Stage.S3));
+        m_gunnerController.button(6).whileTrue(new ClimberCommand(climberSubsystem, Stage.S2));
+        m_gunnerController.button(3).whileTrue(new ClimberCommand(climberSubsystem, Stage.S1));
+
+        m_gunnerController.button(5).onTrue(new InstantCommand(() -> hopperSubsystem.conveyorIn()));
+        m_gunnerController.button(5).onFalse(new InstantCommand(() -> hopperSubsystem.conveyorStop()));
+        m_gunnerController.button(4).onTrue(new InstantCommand(() -> hopperSubsystem.conveyorOut()));
+        m_gunnerController.button(4).onFalse(new InstantCommand(() -> hopperSubsystem.conveyorStop()));
+
+        m_gunnerController.button(7).onTrue(new InstantCommand(() -> intakeSubsystem.reverseIntake()));
+        m_gunnerController.button(7).onFalse(new InstantCommand(() -> intakeSubsystem.stopShooter()));
+
+        m_gunnerController.button(2).whileTrue(new SpitCommand(intakeSubsystem));
+
+        m_pitController.povLeft().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
+        m_pitController.povLeft().onFalse(new InstantCommand(() -> climberSubsystem.stop()));
+        m_pitController.povRight().onTrue(new InstantCommand(() -> climberSubsystem.dumbUnClimb()));
+        m_pitController.povRight().onFalse(new InstantCommand(() -> climberSubsystem.stop()));
+        m_pitController.povUp()
+                .whileTrue(new RunCommand(() -> swerveDriveSubsystem.driveRobotRelative(new ChassisSpeeds(1, 0, 0))));
+        m_pitController.povUp()
+                .onFalse(new InstantCommand(() -> swerveDriveSubsystem.driveRobotRelative(new ChassisSpeeds(0, 0, 0))));
+        m_driverController.povUp()
+                .whileTrue(new RunCommand(() -> swerveDriveSubsystem.driveRobotRelative(new ChassisSpeeds(1, 0, 0))));
+        m_driverController.povUp()
+                .onFalse(new InstantCommand(() -> swerveDriveSubsystem.driveRobotRelative(new ChassisSpeeds(0, 0, 0))));
+
+        // TEMPORARY
+        m_driverController.leftTrigger().whileTrue(new IntakeCommand(intakeSubsystem, hopperSubsystem));
     }
 
-    driveAngularVelocity = SwerveInputStream.of(swerveDriveSubsystem.getSwerveDrive(),
-        () -> m_driverController.getLeftY() * -1,
-        () -> m_driverController.getLeftX() * -1)
-        .withControllerRotationAxis(() -> {
-          if (!m_driverController.leftBumper().getAsBoolean()) {
-            return m_driverController.getRightX();
-          } else {
-            var swerveInput = swerveDriveSubsystem.getRotationToPoint(SwerveDriveSubsystem.getHubPoint())
-                / Math.PI;
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+        if (this.autoChooser != null) {
+            return autoChooser.getSelected();
+        } else {
+            return null;
+        }
 
-            if (0.4 <= Math.abs(swerveInput) && Math.abs(swerveInput) <= 0.035) {
-              return 0.1;
-            }
-
-            return swerveInput;
-          }
-        })
-        .deadband(0.1)
-        .scaleTranslation(0.8)
-        .allianceRelativeControl(true);
-
-    Command driveFieldOrientedAngularVelocityCommand = swerveDriveSubsystem.driveFieldOriented(driveAngularVelocity);
-    swerveDriveSubsystem.setDefaultCommand(driveFieldOrientedAngularVelocityCommand);
-
-    if (DriverStation.isTest()) {
-      m_driverController.povRight()
-          .onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetPose(new Pose2d(5, 5, new Rotation2d()))));
     }
-    // m_driverController.leftBumper().whileTrue(new
-    // MoveToScoreCommand(swerveDriveSubsystem));
-    m_driverController.rightBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
-
-    m_gunnerController.button(1).whileTrue(new IntakeCommand(intakeSubsystem, hopperSubsystem));
-    m_gunnerController.button(8).onTrue(new SpinUpToShootCommandGroup(intakeSubsystem, hopperSubsystem, false)
-        .until(() -> !m_gunnerController.button(8).getAsBoolean()));
-    m_gunnerController.button(4)
-        .onFalse(new StopCommand(intakeSubsystem, hopperSubsystem));
-
-    m_gunnerController.button(12).whileTrue(new ClimberCommand(climberSubsystem, Stage.S4));
-    m_gunnerController.button(9).whileTrue(new ClimberCommand(climberSubsystem, Stage.S3));
-    m_gunnerController.button(6).whileTrue(new ClimberCommand(climberSubsystem, Stage.S2));
-    m_gunnerController.button(3).whileTrue(new ClimberCommand(climberSubsystem, Stage.S1));
-
-    m_gunnerController.button(5).onTrue(new InstantCommand(() -> hopperSubsystem.conveyorIn()));
-    m_gunnerController.button(5).onFalse(new InstantCommand(() -> hopperSubsystem.conveyorStop()));
-    m_gunnerController.button(4).onTrue(new InstantCommand(() -> hopperSubsystem.conveyorOut()));
-    m_gunnerController.button(4).onFalse(new InstantCommand(() -> hopperSubsystem.conveyorStop()));
-
-    m_gunnerController.button(7).onTrue(new InstantCommand(() -> intakeSubsystem.reverseIntake()));
-    m_gunnerController.button(7).onFalse(new InstantCommand(() -> intakeSubsystem.stopShooter()));
-
-    m_gunnerController.button(2).whileTrue(new SpitCommand(intakeSubsystem));
-
-    m_pitController.povLeft().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
-    m_pitController.povLeft().onFalse(new InstantCommand(() -> climberSubsystem.stop()));
-    m_pitController.povRight().onTrue(new InstantCommand(() -> climberSubsystem.dumbUnClimb()));
-    m_pitController.povRight().onFalse(new InstantCommand(() -> climberSubsystem.stop()));
-    m_pitController.povUp()
-        .whileTrue(new RunCommand(() -> swerveDriveSubsystem.driveRobotRelative(new ChassisSpeeds(1, 0, 0))));
-    m_pitController.povUp()
-        .onFalse(new InstantCommand(() -> swerveDriveSubsystem.driveRobotRelative(new ChassisSpeeds(0, 0, 0))));
-    m_driverController.povUp()
-        .whileTrue(new RunCommand(() -> swerveDriveSubsystem.driveRobotRelative(new ChassisSpeeds(1, 0, 0))));
-    m_driverController.povUp()
-        .onFalse(new InstantCommand(() -> swerveDriveSubsystem.driveRobotRelative(new ChassisSpeeds(0, 0, 0))));
-  }
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   * 
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    if (this.autoChooser != null) {
-      return autoChooser.getSelected();
-    } else {
-      return null;
-    }
-
-  }
 
 }

@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Set Initial Pose"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Straight Path"
