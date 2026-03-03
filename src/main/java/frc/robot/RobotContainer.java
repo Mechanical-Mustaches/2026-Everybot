@@ -59,6 +59,8 @@ public class RobotContainer {
   private final HopperSubsystem hopperSubsystem;
   private final PathPlannerAuto pathPlannerAuto;
 
+  public final ShootAllCommandGroup shootAll;
+
   private final SendableChooser<Command> autoChooser;
 
   private final CommandXboxController m_driverController = new CommandXboxController(
@@ -78,6 +80,8 @@ public class RobotContainer {
     climberSubsystem = new ClimberSubsystem();
     intakeSubsystem = new IntakeSubsystem();
     hopperSubsystem = new HopperSubsystem();
+
+    shootAll = new ShootAllCommandGroup(intakeSubsystem, hopperSubsystem);
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
