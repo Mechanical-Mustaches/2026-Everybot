@@ -3,19 +3,13 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot;
 
-import java.util.Optional;
-import java.util.function.DoubleSupplier;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,20 +20,18 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AutoCommands.ShootAllCommandGroup;
 import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.MoveToScoreCommand;
-import frc.robot.commands.ShootCommand;
 import frc.robot.commands.SpinUpToShootCommandGroup;
 import frc.robot.commands.SpitCommand;
 import frc.robot.commands.StopCommand;
-import frc.robot.commands.AutoCommands.ShootAllCommandGroup;
 import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.ClimberSubsystem.Stage;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import swervelib.SwerveInputStream;
-import frc.robot.subsystems.ClimberSubsystem.Stage;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -92,7 +84,10 @@ public class RobotContainer {
                 new InstantCommand(() -> swerveDriveSubsystem
                 .resetPose(new PathPlannerAuto(autoChooser.getSelected().getName()).getStartingPose())));
 
+
         configureBindings();
+
+
 
     }
 

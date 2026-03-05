@@ -26,7 +26,7 @@ public class SpinUpCommand extends Command {
     @Override
     public boolean isFinished() {
         if (isAuto && !intakeSubsystem.isFuelDetected()) {
-            return true;
+            return false;
         } else
             return false;
     }

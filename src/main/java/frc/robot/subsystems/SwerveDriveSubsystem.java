@@ -5,36 +5,26 @@ import java.io.IOException;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import org.opencv.core.Point;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
-import javax.sound.sampled.Line;
-
-import org.dyn4j.geometry.Circle;
-import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import java.awt.geom.*;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import swervelib.SwerveDrive;
@@ -53,6 +43,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     private static double kPositionTolerance = Units.inchesToMeters(3);
     private static double kApproachingTolerance = Units.inchesToMeters(10);
     private static double kRotateToPointOffset = 0;
+    private static double kGyroOffset = Units.degreesToRadians(66.75427373357948);
 
     public static Point getHubPoint() {
 
@@ -125,6 +116,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         SmartDashboard.putData("swerveField", m_field);
 
+        swerveDrive.setGyroOffset(new Rotation3d(0,0,kGyroOffset));
+
     }
 
     public Point getNearestScoringPoint() {
@@ -187,8 +180,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     }
 
     public void resetGyro() {
-        swerveDrive.setGyro(new Rotation3d(0, 0, 0));
+        swerveDrive.setGyro(new Rotation3d(0, 0, Units.degreesToRadians(360)));
     }
+
+
 
     public double getMaximumChassisVelocity() {
         return swerveDrive.getMaximumChassisVelocity();
