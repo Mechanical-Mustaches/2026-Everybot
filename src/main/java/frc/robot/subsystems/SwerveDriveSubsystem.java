@@ -314,7 +314,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             }
         }
 
-        swerveDrive.updateOdometry();
         m_field.setRobotPose(getPose());
         SmartDashboard.putString("swerveModules", swerveDrive.getModules().toString());
 

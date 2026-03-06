@@ -106,25 +106,27 @@ public class RobotContainer {
         private void configureBindings() {
                 SwerveInputStream driveAngularVelocity;
 
-                if (!m_driverController.leftBumper().getAsBoolean()) {
-                        driveAngularVelocity = SwerveInputStream.of(swerveDriveSubsystem.getSwerveDrive(),
-                                        () -> m_driverController.getLeftY() * -1,
-                                        () -> m_driverController.getLeftX() * -1)
-                                        .withControllerRotationAxis(m_driverController::getRightX)
-                                        .deadband(0.1)
-                                        .scaleTranslation(0.8)
-                                        .allianceRelativeControl(true);
-                } else {
-                        driveAngularVelocity = SwerveInputStream.of(swerveDriveSubsystem.getSwerveDrive(),
-                                        () -> m_driverController.getLeftY() * -1,
-                                        () -> m_driverController.getLeftX() * -1)
-                                        .withControllerRotationAxis(
-                                                        () -> (swerveDriveSubsystem.getRotationToPoint(
-                                                                        SwerveDriveSubsystem.getHubPoint()) / Math.PI))
-                                        .deadband(0.1)
-                                        .scaleTranslation(0.8)
-                                        .allianceRelativeControl(true);
-                }
+                // if (!m_driverController.leftBumper().getAsBoolean()) {
+                // driveAngularVelocity =
+                // SwerveInputStream.of(swerveDriveSubsystem.getSwerveDrive(),
+                // () -> m_driverController.getLeftY() * -1,
+                // () -> m_driverController.getLeftX() * -1)
+                // .withControllerRotationAxis(m_driverController::getRightX)
+                // .deadband(0.1)
+                // .scaleTranslation(0.8)
+                // .allianceRelativeControl(true);
+                // } else {
+                // driveAngularVelocity =
+                // SwerveInputStream.of(swerveDriveSubsystem.getSwerveDrive(),
+                // () -> m_driverController.getLeftY() * -1,
+                // () -> m_driverController.getLeftX() * -1)
+                // .withControllerRotationAxis(
+                // () -> (swerveDriveSubsystem.getRotationToPoint(
+                // SwerveDriveSubsystem.getHubPoint()) / Math.PI))
+                // .deadband(0.1)
+                // .scaleTranslation(0.8)
+                // .allianceRelativeControl(true);
+                // }
 
                 driveAngularVelocity = SwerveInputStream.of(swerveDriveSubsystem.getSwerveDrive(),
                                 () -> m_driverController.getLeftY() * -1,
@@ -137,7 +139,7 @@ public class RobotContainer {
                                                                 .getRotationToPoint(SwerveDriveSubsystem.getHubPoint())
                                                                 / Math.PI;
 
-                                                if (0.4 <= Math.abs(swerveInput) && Math.abs(swerveInput) <= 0.035) {
+                                                if (0.4 >= Math.abs(swerveInput) && Math.abs(swerveInput) >= 0.035) {
                                                         return 0.1;
                                                 }
 
