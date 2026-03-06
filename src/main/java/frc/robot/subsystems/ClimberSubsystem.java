@@ -60,11 +60,13 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void climb() {
-        if (revolutions == 1 && Stage.S4.encoderValue - mainClimber.getAbsoluteEncoder().getPosition() <= 0.1) {
-            mainClimber.set(0.4);
-        } else {
-            mainClimber.set(0.75);
-        }
+        // if (revolutions == 1 && Stage.S4.encoderValue -
+        // mainClimber.getAbsoluteEncoder().getPosition() <= 0.1) {
+        // mainClimber.set(0.4);
+        // } else {
+        // mainClimber.set(0.75);
+        // }
+        mainClimber.set(0.75);
     }
 
     public void dumbClimb() {

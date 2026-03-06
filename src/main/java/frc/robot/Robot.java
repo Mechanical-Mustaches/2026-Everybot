@@ -70,15 +70,15 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
         // schedule the autonomous command (example)
-    if (m_autonomousCommand.getName().equals("Preload Auto")) {
-      CommandScheduler.getInstance().schedule(m_robotContainer.shootAll);
-    } else
-        if (m_autonomousCommand != null) {
+        if (m_autonomousCommand.getName().equals("Preload Auto")) {
+            CommandScheduler.getInstance().schedule(m_robotContainer.shootAll);
+        } else if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().schedule(m_autonomousCommand);
         }
     }
 
     /**
+     * .
      * This function is called periodically during autonomous.
      */
     @Override
@@ -91,7 +91,7 @@ public class Robot extends TimedRobot {
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove
         // this line or comment it out.
-          m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
