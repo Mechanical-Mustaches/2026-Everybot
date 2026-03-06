@@ -116,7 +116,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         SmartDashboard.putData("swerveField", m_field);
 
-        swerveDrive.setGyroOffset(new Rotation3d(0,0,kGyroOffset));
+        swerveDrive.setGyroOffset(new Rotation3d(0, 0, kGyroOffset));
 
     }
 
@@ -180,10 +180,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     }
 
     public void resetGyro() {
-        swerveDrive.setGyro(new Rotation3d(0, 0, Units.degreesToRadians(360)));
+        swerveDrive.zeroGyro();
     }
-
-
 
     public double getMaximumChassisVelocity() {
         return swerveDrive.getMaximumChassisVelocity();
@@ -272,7 +270,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
                 swerveDrive.getRobotVelocity().omegaRadiansPerSecond);
         SmartDashboard.putNumber("swerveRadius", swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters());
 
-        double robotYaw = Units.radiansToDegrees(swerveDrive.getGyro().getRotation3d().getZ());
+        double robotYaw = getPose().getRotation().getDegrees();
 
         LimelightHelpers.SetRobotOrientation("limelight-front", robotYaw, 0.0, 0.0, 0.0, 0.0, 0.0);
         LimelightHelpers.SetRobotOrientation("limelight-back", robotYaw, 0.0, 0.0, 0.0, 0.0, 0.0);
