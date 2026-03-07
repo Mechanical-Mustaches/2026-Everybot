@@ -41,7 +41,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void shoot() {
-        mainMotor.set(-1);
+        mainMotor.set(-0.95);
     }
 
     public void intake() {

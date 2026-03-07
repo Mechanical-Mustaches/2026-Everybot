@@ -85,6 +85,8 @@ public class RobotContainer {
                                 new InstantCommand(() -> swerveDriveSubsystem
                                                 .resetPose(new PathPlannerAuto(autoChooser.getSelected().getName())
                                                                 .getStartingPose())));
+                NamedCommands.registerCommand("Auto Gyro Reset",
+                                new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
 
                 configureBindings();
 
