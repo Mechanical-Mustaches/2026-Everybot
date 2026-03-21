@@ -1,12 +1,12 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class HopperSubsystem extends SubsystemBase {
-    private SparkMax conveyorMotor = new SparkMax(13, MotorType.kBrushless);
+    private SparkMax conveyorMotor = new SparkMax(9, MotorType.kBrushless);
 
     public HopperSubsystem() {
 

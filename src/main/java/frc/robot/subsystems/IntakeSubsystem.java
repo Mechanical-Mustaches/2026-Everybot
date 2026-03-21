@@ -49,11 +49,11 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void indexIn() {
-        indexMotor.set(-.75);
+        indexMotor.set(0.75);
     }
 
     public void indexOut() {
-        indexMotor.set(1);
+        indexMotor.set(-1);
     }
 
     public void stopShooter() {
