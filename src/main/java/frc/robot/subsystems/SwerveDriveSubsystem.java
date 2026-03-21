@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import org.opencv.core.Point;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -36,6 +37,7 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 public class SwerveDriveSubsystem extends SubsystemBase {
     private final SwerveDrive swerveDrive;
     private final Field2d m_field;
+    Pose2d initialPose;
 
     private static Point kRedHubPoint = new Point(4.034663, 4.625594);
     private static Point kBlueHubPoint = new Point(4.034663, 4.625594);
@@ -105,6 +107,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             // Handle exception as needed
             e.printStackTrace();
         }
+
+        initialPose = new Pose2d(0, 0, new Rotation2d(0, 0));
 
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
 
@@ -181,6 +185,21 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     public void resetGyro() {
         swerveDrive.zeroGyro();
+
+        // maybe to implement
+        // // Override YAGSL's default assumption.
+        // // Force the odometry to assume the robot is facing the driver station.
+        // var alliance = DriverStation.getAlliance();
+
+        // if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+        // // On Red, the driver station is at 0 degrees
+        // swerveDrive.resetOdometry(new Pose2d(getPose().getTranslation(),
+        // Rotation2d.fromDegrees(0)));
+        // } else {
+        // // On Blue, the driver station is at 180 degrees
+        // swerveDrive.resetOdometry(new Pose2d(getPose().getTranslation(),
+        // Rotation2d.fromDegrees(180)));
+        // }
     }
 
     public double getMaximumChassisVelocity() {
@@ -197,6 +216,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     }
 
     public void resetPose(Pose2d initialPose) {
+        this.initialPose = initialPose;
         swerveDrive.resetOdometry(initialPose);
     }
 
@@ -261,6 +281,9 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // First, tell Limelight your robot's current orientation
+
+        SmartDashboard.putNumber("initialX", initialPose.getX());
+        SmartDashboard.putNumber("initialY", initialPose.getY());
 
         SmartDashboard.putBoolean("isInRange", isInRange());
         SmartDashboard.putBoolean("isApproaching", isApproaching());
