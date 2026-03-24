@@ -158,6 +158,7 @@ public class RobotContainer {
                 // m_driverController.leftBumper().whileTrue(new
                 // MoveToScoreCommand(swerveDriveSubsystem));
                 m_driverController.rightBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
+                m_driverController.a().onTrue(new InstantCommand(() -> hopperSubsystem.unlatch()));
 
                 m_gunnerController.button(1).whileTrue(new IntakeCommand(intakeSubsystem, hopperSubsystem));
                 m_gunnerController.button(8)
@@ -184,7 +185,8 @@ public class RobotContainer {
 
                 m_gunnerController.button(2).whileTrue(new SpitCommand(intakeSubsystem));
 
-                m_pitController.a().onTrue(new UnlatchCommandGroup(hopperSubsystem));
+                // m_pitController.a().onTrue(new UnlatchCommandGroup(hopperSubsystem));
+                m_pitController.a().onTrue(new InstantCommand(() -> hopperSubsystem.unlatch()));
 
                 m_pitController.povUp()
                                 .whileTrue(new RunCommand(() -> swerveDriveSubsystem

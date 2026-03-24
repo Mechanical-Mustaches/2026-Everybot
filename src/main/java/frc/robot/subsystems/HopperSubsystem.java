@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.util.ExceptionUtil;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class HopperSubsystem extends SubsystemBase {
@@ -32,7 +33,7 @@ public class HopperSubsystem extends SubsystemBase {
     public void unlatch() {
         var unlatchPosition = 0.5;
         leftServo.set(unlatchPosition - 0.175);
-        rightServo.set(unlatchPosition + 0.175);
+        rightServo.set(unlatchPosition - 0.175);
 
     }
 
@@ -40,6 +41,12 @@ public class HopperSubsystem extends SubsystemBase {
         leftServo.set(leftServo.getPosition());
         rightServo.set(rightServo.getPosition());
 
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("leftServoPos", leftServo.getPosition());
+        SmartDashboard.putNumber("rightServoPos", rightServo.getPosition());
     }
 
 }
