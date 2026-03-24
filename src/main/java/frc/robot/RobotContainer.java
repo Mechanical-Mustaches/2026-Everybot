@@ -129,7 +129,7 @@ public class RobotContainer {
                                 () -> m_driverController.getLeftX() * -1)
                                 .withControllerRotationAxis(() -> {
                                         if (!m_driverController.leftBumper().getAsBoolean()) {
-                                                return m_driverController.getRightX();
+                                                return -m_driverController.getRightX();
                                         } else {
                                                 var swerveInput = swerveDriveSubsystem
                                                                 .getRotationToPoint(SwerveDriveSubsystem.getHubPoint())
