@@ -31,8 +31,8 @@ public class HopperSubsystem extends SubsystemBase {
 
     public void unlatch() {
         var unlatchPosition = 0.5;
-        leftServo.set(unlatchPosition + 0.5);
-        rightServo.set(unlatchPosition - 0.5);
+        leftServo.set(unlatchPosition - 0.175);
+        rightServo.set(unlatchPosition + 0.175);
 
     }
 
