@@ -46,7 +46,7 @@ public class IntakeSubsystem extends SubsystemBase {
         mainMotor.set(-0.95);
     }
 
-    public void pidShoot(){
+    public void velocityShoot(){
         double motorSpeed = mainMotor.getEncoder().getVelocity();
         if (motorSpeed <= desiredMotorSpeed){
             mainMotor.set(-1);
