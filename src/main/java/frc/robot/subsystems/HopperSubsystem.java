@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.fasterxml.jackson.databind.util.ExceptionUtil;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.Servo;
@@ -12,6 +13,7 @@ public class HopperSubsystem extends SubsystemBase {
     private Servo rightServo = new Servo(8);
 
     public HopperSubsystem() {
+        rightServo.setBoundsMicroseconds(2500, 2300, 1500, 700, 500);
 
     }
 
@@ -28,20 +30,15 @@ public class HopperSubsystem extends SubsystemBase {
     }
 
     public void unlatch() {
-        leftServo.setSpeed(1);
-        rightServo.setSpeed(-1);
-
-    }
-
-    public void latch() {
-        leftServo.setSpeed(-1);
-        rightServo.setSpeed(1);
+        var unlatchPosition = 0.5;
+        leftServo.set(unlatchPosition + 0.5);
+        rightServo.set(unlatchPosition - 0.5);
 
     }
 
     public void stopServos() {
-        leftServo.setSpeed(0);
-        rightServo.setSpeed(-0);
+        leftServo.set(leftServo.getPosition());
+        rightServo.set(rightServo.getPosition());
 
     }
 

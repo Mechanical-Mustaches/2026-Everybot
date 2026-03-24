@@ -10,8 +10,8 @@ public class UnlatchCommandGroup extends Command {
 
     public UnlatchCommandGroup(HopperSubsystem hopperSubsystem) {
         new SequentialCommandGroup(
-                new InstantCommand(() -> hopperSubsystem.unlatch()),
-                new WaitCommand(0.5),
-                new InstantCommand(() -> hopperSubsystem.stopServos()));
+                new InstantCommand(() -> hopperSubsystem.unlatch()));
+        // new WaitCommand(0.5),
+        // new InstantCommand(() -> hopperSubsystem.stopServos()));
     }
 }
