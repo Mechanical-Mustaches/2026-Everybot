@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class HopperSubsystem extends SubsystemBase {
-    private SparkMax conveyorMotor = new SparkMax(13, MotorType.kBrushless);
+    private SparkMax conveyorMotor = new SparkMax(9, MotorType.kBrushless);
     private Servo leftServo = new Servo(9);
     private Servo rightServo = new Servo(8);
 
@@ -28,20 +28,20 @@ public class HopperSubsystem extends SubsystemBase {
     }
 
     public void unlatch() {
-        leftServo.set(1);
-        rightServo.set(-1);
+        leftServo.setSpeed(1);
+        rightServo.setSpeed(-1);
 
     }
 
     public void latch() {
-        leftServo.set(-1);
-        rightServo.set(1);
+        leftServo.setSpeed(-1);
+        rightServo.setSpeed(1);
 
     }
 
     public void stopServos() {
-        leftServo.set(0);
-        rightServo.set(0);
+        leftServo.setSpeed(0);
+        rightServo.setSpeed(-0);
 
     }
 
