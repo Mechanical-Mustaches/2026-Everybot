@@ -21,10 +21,14 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoCommands.ShootAllCommandGroup;
+import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.SpinUpToShootCommandGroup;
 import frc.robot.commands.SpitCommand;
 import frc.robot.commands.StopCommand;
+import frc.robot.commands.UnlatchCommandGroup;
+import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.ClimberSubsystem.Stage;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
@@ -39,6 +43,7 @@ import swervelib.SwerveInputStream;
  */
 public class RobotContainer {
 
+        public final ClimberSubsystem climberSubsystem;
         public final IntakeSubsystem intakeSubsystem;
         private final SwerveDriveSubsystem swerveDriveSubsystem;
         private final HopperSubsystem hopperSubsystem;
@@ -63,6 +68,7 @@ public class RobotContainer {
         public RobotContainer() {
 
                 swerveDriveSubsystem = new SwerveDriveSubsystem();
+                climberSubsystem = new ClimberSubsystem();
                 intakeSubsystem = new IntakeSubsystem();
                 hopperSubsystem = new HopperSubsystem();
 
@@ -73,6 +79,8 @@ public class RobotContainer {
 
                 // Configure the trigger bindings
                 NamedCommands.registerCommand("Shoot", new ShootAllCommandGroup(intakeSubsystem, hopperSubsystem));
+                NamedCommands.registerCommand("Climb", new ClimberCommand(climberSubsystem, Stage.S3));
+                NamedCommands.registerCommand("PreClimb", new ClimberCommand(climberSubsystem, Stage.S1));
                 NamedCommands.registerCommand("Intake", new IntakeCommand(intakeSubsystem, hopperSubsystem));
                 NamedCommands.registerCommand("Set Initial Pose",
                                 new InstantCommand(() -> swerveDriveSubsystem
@@ -174,6 +182,10 @@ public class RobotContainer {
                 // m_gunnerController.button(3).whileTrue(new ClimberCommand(climberSubsystem,
                 // Stage.S1));
 
+                m_gunnerController.button(3).onTrue(new InstantCommand(() -> climberSubsystem.climb()));
+                m_gunnerController.button(3).onFalse(new InstantCommand(() -> climberSubsystem.stop()));
+                m_gunnerController.button(6).onTrue(new InstantCommand(() -> climberSubsystem.reverseClimb()));
+                m_gunnerController.button(6).onFalse(new InstantCommand(() -> climberSubsystem.stop()));
 
                 m_gunnerController.button(5).onTrue(new InstantCommand(() -> hopperSubsystem.conveyorIn()));
                 m_gunnerController.button(5).onFalse(new InstantCommand(() -> hopperSubsystem.conveyorStop()));
@@ -183,6 +195,12 @@ public class RobotContainer {
                 m_gunnerController.button(7).whileTrue(new SpitCommand(intakeSubsystem));
 
                 m_gunnerController.button(2).whileTrue(new SpitCommand(intakeSubsystem));
+
+                m_pitController.povLeft().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
+                m_pitController.povLeft().onFalse(new InstantCommand(() -> climberSubsystem.stop()));
+                m_pitController.povRight().onTrue(new InstantCommand(() -> climberSubsystem.dumbUnClimb()));
+                m_pitController.povRight().onFalse(new InstantCommand(() -> climberSubsystem.stop()));
+                m_pitController.a().onTrue(new UnlatchCommandGroup(hopperSubsystem));
 
                 m_pitController.povUp()
                                 .whileTrue(new RunCommand(() -> swerveDriveSubsystem
