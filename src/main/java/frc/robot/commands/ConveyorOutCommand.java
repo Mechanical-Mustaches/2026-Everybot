@@ -16,11 +16,6 @@ public class ConveyorOutCommand extends Command {
 
     @Override
     public void execute() {
-        if (!intakeSubsystem.isAtSpeed()) {
-            hopperSubsystem.conveyorIn();
-
-        }
-
         hopperSubsystem.conveyorOut();
     }
 
