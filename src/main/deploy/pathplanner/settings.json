@@ -3,9 +3,9 @@
   "robotLength": 0.8382,
   "holonomicMode": true,
   "pathFolders": [
+    "Right Center Auto Folder",
     "Depot Auto Folder",
-    "Middle Auto Folder",
-    "Center Auto Folder",
+    "Left Center Auto Folder",
     "Outpost Auto Folder"
   ],
   "autoFolders": [],
