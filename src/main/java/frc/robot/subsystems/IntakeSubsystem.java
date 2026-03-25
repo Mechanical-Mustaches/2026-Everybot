@@ -43,16 +43,15 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void shoot() {
-        mainMotor.set(-0.95);
+        mainMotor.set(-0.9);
     }
 
     public void velocityShoot() {
-        // negative values change signs
-        double motorSpeed = mainMotor.getEncoder().getVelocity();
-        if (motorSpeed > desiredMotorSpeed) {
+        double motorSpeed = -mainMotor.getEncoder().getVelocity();
+        if (motorSpeed < desiredMotorSpeed) {
             mainMotor.set(-1);
-        } else if (motorSpeed < desiredMotorSpeed) {
-            mainMotor.set(-.9);
+        } else if (motorSpeed > desiredMotorSpeed) {
+            mainMotor.set(-.6);
         } else
             mainMotor.set(-.95);
 
