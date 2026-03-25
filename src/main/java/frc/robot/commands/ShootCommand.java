@@ -19,7 +19,7 @@ public class ShootCommand extends Command {
         intake.indexOut();
         intake.velocityShoot();
     }
-    
+
     @Override
     public void execute() {
         intake.velocityShoot();

@@ -13,7 +13,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSubsystem extends SubsystemBase {
 
-    double desiredMotorSpeed = -5000;
+    double kDesiredMotorSpeed = 5000;
+    double kMotorSpeedTolerance = 100;
 
     SparkMax mainMotor = new SparkMax(12, MotorType.kBrushless);
     SparkMax mainMotorFollower = new SparkMax(11, MotorType.kBrushless);
@@ -48,13 +49,20 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void velocityShoot() {
         double motorSpeed = -mainMotor.getEncoder().getVelocity();
-        if (motorSpeed < desiredMotorSpeed) {
+        if (velocityInRange()) {
+            mainMotor.set(-.9);
+        } else if (motorSpeed < kDesiredMotorSpeed) {
             mainMotor.set(-1);
-        } else if (motorSpeed > desiredMotorSpeed) {
-            mainMotor.set(-.8);
         } else
-            mainMotor.set(-.95);
+            mainMotor.set(-.8);
+    }
 
+    private boolean velocityInRange() {
+        double motorSpeed = -mainMotor.getEncoder().getVelocity();
+        if (Math.abs(kDesiredMotorSpeed - motorSpeed) < kMotorSpeedTolerance) {
+            return true;
+        } else
+            return false;
     }
 
     public void intake() {

@@ -165,6 +165,10 @@ public class RobotContainer {
                 m_gunnerController.button(8)
                                 .onTrue(new SpinUpToShootCommandGroup(intakeSubsystem, hopperSubsystem, false)
                                                 .until(() -> !m_gunnerController.button(8).getAsBoolean()));
+                m_gunnerController.button(8).onFalse(new InstantCommand(() -> hopperSubsystem.conveyorStop()));
+                m_gunnerController.button(8)
+                                .onFalse(new StopCommand(intakeSubsystem, hopperSubsystem));
+
                 m_gunnerController.button(4)
                                 .onFalse(new StopCommand(intakeSubsystem, hopperSubsystem));
 
