@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 
 import org.opencv.core.Point;
 
+import com.ctre.phoenix6.swerve.SwerveModule;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.PIDConstants;
@@ -346,6 +347,13 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         SmartDashboard.putBoolean("allianceIsBlue", DriverStation.getAlliance().get() == DriverStation.Alliance.Blue);
         SmartDashboard.putNumber("rotationToHub", getRotationToPoint(getHubPoint()));
+
+        for (swervelib.SwerveModule swerveModule : swerveDrive.getModules()) {
+            SmartDashboard.putNumber("distanceForModule" + swerveModule.moduleNumber,
+                    swerveModule.getPosition().distanceMeters);
+            SmartDashboard.putNumber("angleForModule" + swerveModule.moduleNumber,
+                    swerveModule.getPosition().distanceMeters);
+        }
 
     }
 }

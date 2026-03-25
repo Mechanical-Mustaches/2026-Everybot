@@ -51,7 +51,7 @@ public class IntakeSubsystem extends SubsystemBase {
         if (motorSpeed < desiredMotorSpeed) {
             mainMotor.set(-1);
         } else if (motorSpeed > desiredMotorSpeed) {
-            mainMotor.set(-.6);
+            mainMotor.set(-.8);
         } else
             mainMotor.set(-.95);
 

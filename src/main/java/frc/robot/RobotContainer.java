@@ -81,6 +81,7 @@ public class RobotContainer {
                                                                 .getStartingPose())));
                 NamedCommands.registerCommand("Auto Gyro Reset",
                                 new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
+                NamedCommands.registerCommand("Extend Hopper", new InstantCommand(() -> hopperSubsystem.unlatch()));
 
                 configureBindings();
 
@@ -166,15 +167,6 @@ public class RobotContainer {
                                                 .until(() -> !m_gunnerController.button(8).getAsBoolean()));
                 m_gunnerController.button(4)
                                 .onFalse(new StopCommand(intakeSubsystem, hopperSubsystem));
-
-                // m_gunnerController.button(12).whileTrue(new ClimberCommand(climberSubsystem,
-                // Stage.S4));
-                // m_gunnerController.button(9).whileTrue(new ClimberCommand(climberSubsystem,
-                // Stage.S3));
-                // m_gunnerController.button(6).whileTrue(new ClimberCommand(climberSubsystem,
-                // Stage.S2));
-                // m_gunnerController.button(3).whileTrue(new ClimberCommand(climberSubsystem,
-                // Stage.S1));
 
                 m_gunnerController.button(5).onTrue(new InstantCommand(() -> hopperSubsystem.conveyorIn()));
                 m_gunnerController.button(5).onFalse(new InstantCommand(() -> hopperSubsystem.conveyorStop()));
