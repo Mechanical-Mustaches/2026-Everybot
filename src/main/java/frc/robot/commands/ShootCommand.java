@@ -8,10 +8,18 @@ public class ShootCommand extends Command {
 
     IntakeSubsystem intake;
     HopperSubsystem hopper;
+    boolean isAuto;
+
+    public ShootCommand(IntakeSubsystem intake, HopperSubsystem hopper, boolean isAuto) {
+        this.intake = intake;
+        this.hopper = hopper;
+        this.isAuto = isAuto;
+    }
 
     public ShootCommand(IntakeSubsystem intake, HopperSubsystem hopper) {
         this.intake = intake;
         this.hopper = hopper;
+        this.isAuto = false;
     }
 
     @Override
@@ -27,9 +35,15 @@ public class ShootCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        intake.stopIndex();
-        intake.stopShooter();
+        if (!isAuto) {
+            intake.stopIndex();
+            intake.stopShooter();
+        }
+    }
 
+    @Override
+    public boolean isFinished() {
+        return false;
     }
 
 }

@@ -28,6 +28,12 @@
           "data": {
             "name": "Extend Hopper"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Preload to Center Path"
+          }
         }
       ]
     }

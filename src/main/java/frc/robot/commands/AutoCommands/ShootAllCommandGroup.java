@@ -8,10 +8,9 @@ import frc.robot.subsystems.IntakeSubsystem;
 
 public class ShootAllCommandGroup extends ParallelRaceGroup {
 
-
     public ShootAllCommandGroup(IntakeSubsystem intakeSubsystem, HopperSubsystem hopperSubsystem) {
         addCommands(
-                new SpinUpToShootCommandGroup(intakeSubsystem, hopperSubsystem, true),
+                new SpinUpToShootCommandGroup(intakeSubsystem, hopperSubsystem),
                 new WaitCommand(5));
     }
 }

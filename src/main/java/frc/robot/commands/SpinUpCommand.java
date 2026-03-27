@@ -6,28 +6,28 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class SpinUpCommand extends Command {
 
     IntakeSubsystem intakeSubsystem;
-    Boolean isAuto;
 
-    public SpinUpCommand(IntakeSubsystem intakeSubsystem, Boolean isAuto) {
+    public SpinUpCommand(IntakeSubsystem intakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
-        this.isAuto = isAuto;
     }
 
     @Override
     public void initialize() {
-        intakeSubsystem.shoot();
+        intakeSubsystem.velocityShoot();
     }
 
     @Override
-    public void end(boolean interrupted) {
-        intakeSubsystem.stopShooter();
+    public void execute() {
+        intakeSubsystem.velocityShoot();
     }
 
     @Override
     public boolean isFinished() {
-        if (isAuto && !intakeSubsystem.isFuelDetected()) {
-            return false;
-        } else
-            return false;
+        return true;
     }
+
+    @Override
+    public void end(boolean interrupted) {
+    }
+
 }

@@ -73,7 +73,7 @@ public class RobotContainer {
                 SmartDashboard.putData("Auto Chooser", autoChooser);
 
                 // Configure the trigger bindings
-                NamedCommands.registerCommand("Shoot", new ShootAllCommandGroup(intakeSubsystem, hopperSubsystem));
+                NamedCommands.registerCommand("Shoot", new SpinUpToShootCommandGroup(intakeSubsystem, hopperSubsystem));
                 NamedCommands.registerCommand("Intake", new IntakeCommand(intakeSubsystem, hopperSubsystem));
                 NamedCommands.registerCommand("Set Initial Pose",
                                 new InstantCommand(() -> swerveDriveSubsystem
@@ -163,9 +163,7 @@ public class RobotContainer {
 
                 m_gunnerController.button(1).whileTrue(new IntakeCommand(intakeSubsystem, hopperSubsystem));
                 m_gunnerController.button(8)
-                                .onTrue(new SpinUpToShootCommandGroup(intakeSubsystem, hopperSubsystem, false)
-                                                .until(() -> !m_gunnerController.button(8).getAsBoolean()));
-                m_gunnerController.button(8).onFalse(new InstantCommand(() -> hopperSubsystem.conveyorStop()));
+                                .onTrue(new SpinUpToShootCommandGroup(intakeSubsystem, hopperSubsystem));
                 m_gunnerController.button(8)
                                 .onFalse(new StopCommand(intakeSubsystem, hopperSubsystem));
 

@@ -9,12 +9,12 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class SpinUpToShootCommandGroup extends SequentialCommandGroup {
+public class AutoSpinUpToShootCommandGroup extends SequentialCommandGroup {
 
     IntakeSubsystem intakeSubsystem;
     HopperSubsystem hopperSubsystem;
 
-    public SpinUpToShootCommandGroup(IntakeSubsystem intakeSubsystem, HopperSubsystem hopperSubsystem) {
+    public AutoSpinUpToShootCommandGroup(IntakeSubsystem intakeSubsystem, HopperSubsystem hopperSubsystem) {
         addCommands(
                 new SpinUpCommand(intakeSubsystem),
                 new WaitCommand(1.5),
