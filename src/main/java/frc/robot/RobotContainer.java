@@ -169,17 +169,18 @@ public class RobotContainer {
                 m_gunnerController.button(8)
                                 .onFalse(new StopCommand(intakeSubsystem, hopperSubsystem));
 
-                m_gunnerController.button(4)
-                                .onFalse(new StopCommand(intakeSubsystem, hopperSubsystem));
-
                 m_gunnerController.button(5).onTrue(new InstantCommand(() -> hopperSubsystem.conveyorIn()));
                 m_gunnerController.button(5).onFalse(new InstantCommand(() -> hopperSubsystem.conveyorStop()));
-                m_gunnerController.button(4).onTrue(new InstantCommand(() -> hopperSubsystem.conveyorOut()));
-                m_gunnerController.button(4).onFalse(new InstantCommand(() -> hopperSubsystem.conveyorStop()));
+                // m_gunnerController.button(4).onTrue(new InstantCommand(() ->
+                // hopperSubsystem.conveyorOut()));
+                // m_gunnerController.button(4).onFalse(new InstantCommand(() ->
+                // hopperSubsystem.conveyorStop()));
+                // m_gunnerController.button(4)
+                // .onFalse(new StopCommand(intakeSubsystem, hopperSubsystem));
 
-                m_gunnerController.button(7).whileTrue(new SpitCommand(intakeSubsystem));
+                m_gunnerController.button(7).whileTrue(new SpitCommand(intakeSubsystem, hopperSubsystem));
 
-                m_gunnerController.button(2).whileTrue(new SpitCommand(intakeSubsystem));
+                m_gunnerController.button(2).whileTrue(new SpitCommand(intakeSubsystem, hopperSubsystem));
 
                 // m_pitController.a().onTrue(new UnlatchCommandGroup(hopperSubsystem));
                 m_pitController.a().onTrue(new InstantCommand(() -> hopperSubsystem.unlatch()));

@@ -44,7 +44,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void shoot() {
-        mainMotor.set(-0.9);
+        mainMotor.set(-1);
     }
 
     public void velocityShoot() {
@@ -124,6 +124,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("FlywheelVelocity", mainMotor.getEncoder().getVelocity());
         SmartDashboard.putNumber("FlywheelMotorPower", mainMotor.getAppliedOutput());
+        SmartDashboard.putBoolean("FlywheelVelocityInRange", velocityInRange());
     }
 
 }
